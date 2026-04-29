@@ -21,9 +21,9 @@ async function crearSolicitud(req, res) {
         [req.usuario.id, dispositivo_tipo_id, punto_reciclaje_id, metodo_entrega]
       );
 
-      // 2. Obtener puntos del dispositivo
+      // 2. Obtener puntos y nombre del dispositivo
       const dispRes = await client.query(
-        'SELECT puntos FROM dispositivo_tipo WHERE id = $1',
+        'SELECT puntos, nombre FROM dispositivo_tipo WHERE id = $1',
         [dispositivo_tipo_id]
       );
 
@@ -32,6 +32,7 @@ async function crearSolicitud(req, res) {
       }
 
       const puntosParaSumar = dispRes.rows[0].puntos || 0;
+      const nombreDispositivo = dispRes.rows[0].nombre || 'dispositivo';
 
       // 3. Sumar puntos al usuario
       await client.query(
@@ -42,7 +43,7 @@ async function crearSolicitud(req, res) {
       // 4. Crear notificacion
       await client.query(
         `INSERT INTO notificacion (usuario_id, titulo, mensaje) VALUES ($1, $2, $3)`,
-        [req.usuario.id, '¡Reciclaje Exitoso!', `Has sumado ${puntosParaSumar} puntos verdes a tu cuenta por reciclar. ¡Sigue así!`]
+        [req.usuario.id, '¡Reciclaje Exitoso!', `Has sumado ${puntosParaSumar} puntos verdes a tu cuenta por reciclar tu ${nombreDispositivo}. ¡Sigue así!`]
       );
 
       await client.query('COMMIT');
