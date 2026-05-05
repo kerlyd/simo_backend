@@ -84,18 +84,22 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
 
   Future<void> _fetchDispositivos() async {
     try {
-      final data = await sl<DispositivoRemoteDataSource>().getTiposDispositivo();
+      // Lista personalizada según requerimiento del usuario y referencia
+      final customDispositivos = [
+        DispositivoModel(id: 1, nombre: 'Celular', puntos: 800),
+        DispositivoModel(id: 2, nombre: 'Bateria', puntos: 800),
+        DispositivoModel(id: 3, nombre: 'Pantallas o TV', puntos: 800),
+        DispositivoModel(id: 4, nombre: 'Refrigerador', puntos: 800),
+        DispositivoModel(id: 5, nombre: 'Cables', puntos: 800),
+        DispositivoModel(id: 6, nombre: 'Licuadora', puntos: 800),
+      ];
+
       setState(() {
-        _apiDispositivos = data;
+        _apiDispositivos = customDispositivos;
         _loading = false;
       });
     } catch (e) {
       setState(() => _loading = false);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar dispositivos: $e')),
-        );
-      }
     }
   }
 
@@ -156,7 +160,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                         color: Colors.grey,
                         size: 20,
                       ),
-                      hintText: '¿Qué dispositivo quieres reciclar hoy?',
+                      hintText: 'Busca tu dispositivo...',
                       border: InputBorder.none,
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 13),
                     ),
@@ -168,7 +172,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
 
               // ── Grid de dispositivos ───────────────────────────
               Expanded(
-                flex: selectedDispositivo == null ? 6 : 4,
+                flex: selectedDispositivo == null ? 5 : 3,
                 child: _loading 
                   ? const Center(child: CircularProgressIndicator(color: AppColors.simoAmarillo))
                   : Column(
@@ -219,7 +223,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
 
               // ── Área inferior: Destinos o Espera ─────────────────
               Expanded(
-                flex: selectedDispositivo == null ? 4 : 5,
+                flex: selectedDispositivo == null ? 5 : 6,
                 child: selectedDispositivo == null
                     ? _buildWaitingCard()
                     : _buildDestinationsList(),
@@ -321,34 +325,34 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
       child: GestureDetector(
         onTap: () => _navigateToConfirm(aliado, direccion, metodo),
         child: Container(
-          height: 82,
-          margin: const EdgeInsets.only(bottom: 10),
+          height: 108,
+          margin: const EdgeInsets.only(bottom: 14),
           decoration: BoxDecoration(
             color: AppColors.simoCrudo,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(22),
           ),
           child: Row(
             children: [
               // Sección Amarilla (Izquierda)
               Container(
-                width: 82,
-                height: 82,
+                width: 108,
+                height: 108,
                 decoration: const BoxDecoration(
                   color: AppColors.simoAmarillo,
                   borderRadius: BorderRadius.horizontal(
-                    left: Radius.circular(20),
+                    left: Radius.circular(22),
                   ),
                 ),
                 child: Stack(
                   children: [
                     const Positioned(
-                      top: 6,
-                      right: 12,
+                      top: 10,
+                      right: 14,
                       child: Text(
                         '1x',
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
-                          fontSize: 11,
+                          fontSize: 13,
                           color: Color(0xFF424242),
                         ),
                       ),
@@ -360,20 +364,20 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                           if (selectedIconPath != null)
                             Image.asset(
                               selectedIconPath!,
-                              height: 28,
-                              width: 28,
+                              height: 44,
+                              width: 44,
                               fit: BoxFit.contain,
                             ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
                             child: Text(
                               selectedDispositivo ?? '',
                               style: const TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w900,
                                 color: Color(0xFF424242),
-                                height: 1.0,
+                                height: 1.1,
                               ),
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.ellipsis,
@@ -389,7 +393,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
               // Sección Cruda (Derecha)
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   child: Row(
                     children: [
                       Expanded(
@@ -401,26 +405,26 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                               'Destino: $aliado',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
-                                fontSize: 13,
+                                fontSize: 16,
                                 color: Color(0xFF333333),
                               ),
                             ),
-                            const SizedBox(height: 1),
+                            const SizedBox(height: 2),
                             Text(
                               direccion,
                               style: const TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 color: Color(0xFF6E6E6E),
                                 fontWeight: FontWeight.w700,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 14,
-                                vertical: 4,
+                                vertical: 6,
                               ),
                               decoration: BoxDecoration(
                                 color: colorBoton,
@@ -429,7 +433,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                               child: Text(
                                 metodo,
                                 style: const TextStyle(
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w900,
                                   color: Color(0xFF424242),
                                 ),
@@ -444,16 +448,16 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                         children: [
                           Image.asset(
                             'assets/imagenes/canjear/flor.png',
-                            height: 32,
-                            width: 32,
+                            height: 36,
+                            width: 36,
                             fit: BoxFit.contain,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: 6),
                           Text(
                             '$puntos',
                             style: const TextStyle(
                               fontWeight: FontWeight.w900,
-                              fontSize: 19,
+                              fontSize: 24,
                               color: Color(0xFF424242),
                             ),
                           ),
