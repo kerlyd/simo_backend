@@ -1,0 +1,26 @@
+import 'package:dio/dio.dart';
+import '../../domain/entities/detalle_solicitud_entity.dart';
+import '../../domain/entities/historial_entity.dart';
+import '../../domain/entities/notificacion_entity.dart';
+import '../models/detalle_solicitud_model.dart';
+
+abstract class SolicitudRemoteDataSource {
+  Future<DetalleSolicitudModel> getDetalleSolicitud(String id);
+  Future<void> completarSolicitud(String id);
+}
+
+class SolicitudRemoteDataSourceImpl implements SolicitudRemoteDataSource {
+  final Dio _dio;
+  SolicitudRemoteDataSourceImpl(this._dio);
+
+  @override
+  Future<DetalleSolicitudModel> getDetalleSolicitud(String id) async {
+    final response = await _dio.get('/api/solicitudes/$id');
+    return DetalleSolicitudModel.fromJson(response.data['solicitud']);
+  }
+
+  @override
+  Future<void> completarSolicitud(String id) async {
+    await _dio.put('/api/solicitudes/$id/completar');
+  }
+}
