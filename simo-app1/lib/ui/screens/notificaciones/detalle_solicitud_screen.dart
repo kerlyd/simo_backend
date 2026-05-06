@@ -180,7 +180,7 @@ class _SeccionPrincipal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Tarjeta amarilla del dispositivo
-            _IconoDispositivo(tipo: detalle.tipoDispositivo, cantidad: detalle.cantidad),
+            _IconoDispositivo(tipo: detalle.tipoDispositivo, cantidad: detalle.cantidad, electrodomestico: detalle.electrodomestico),
             const SizedBox(width: 20),
             // Información del destino
             Expanded(child: _InfoDestino(detalle: detalle)),
@@ -215,8 +215,9 @@ class _SeccionPrincipal extends StatelessWidget {
 class _IconoDispositivo extends StatelessWidget {
   final TipoDispositivo tipo;
   final int cantidad;
+  final String electrodomestico;
 
-  const _IconoDispositivo({required this.tipo, required this.cantidad});
+  const _IconoDispositivo({required this.tipo, required this.cantidad, required this.electrodomestico});
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +266,17 @@ class _IconoDispositivo extends StatelessWidget {
   }
 
   String get _iconPath {
+    final elec = electrodomestico.toLowerCase();
+    if (elec.contains('consola')) return 'assets/imagenes/opciones/consolasdejuegos.png';
+    if (elec.contains('licuadora')) return 'assets/imagenes/opciones/licuadora.png';
+    if (elec.contains('cargador') || elec.contains('cable')) return 'assets/imagenes/opciones/cargadores.png';
+    if (elec.contains('microondas')) return 'assets/imagenes/opciones/microondas.png';
+    if (elec.contains('mouse') || elec.contains('teclado')) return 'assets/imagenes/opciones/mouse.png';
+    if (elec.contains('pantalla') || elec.contains('tv') || elec.contains('televisor')) return 'assets/imagenes/opciones/tv.png';
+    if (elec.contains('plancha')) return 'assets/imagenes/opciones/plancha.png';
+    if (elec.contains('refrigerador') || elec.contains('nevera')) return 'assets/imagenes/opciones/refrigerador.png';
+    if (elec.contains('ventilador')) return 'assets/imagenes/opciones/ventilador.png';
+
     switch (tipo) {
       case TipoDispositivo.bateria:
         return 'assets/icons/image 4 (2).png';
@@ -273,13 +285,24 @@ class _IconoDispositivo extends StatelessWidget {
       case TipoDispositivo.tablet:
         return 'assets/icons/tablet_icono.png';
       case TipoDispositivo.laptop:
-        return 'assets/icons/celular_icono.jpeg'; // Fallback
+        return 'assets/imagenes/opciones/laptop.png';
       default:
         return 'assets/icons/celular_icono.png';
     }
   }
 
   String get _label {
+    final elec = electrodomestico.toLowerCase();
+    if (elec.contains('consola')) return 'Consola';
+    if (elec.contains('licuadora')) return 'Licuadora';
+    if (elec.contains('cargador') || elec.contains('cable')) return 'Cables';
+    if (elec.contains('microondas')) return 'Microondas';
+    if (elec.contains('mouse') || elec.contains('teclado')) return 'Periférico';
+    if (elec.contains('pantalla') || elec.contains('tv') || elec.contains('televisor')) return 'Pantalla/TV';
+    if (elec.contains('plancha')) return 'Plancha';
+    if (elec.contains('refrigerador') || elec.contains('nevera')) return 'Refrigerador';
+    if (elec.contains('ventilador')) return 'Ventilador';
+
     switch (tipo) {
       case TipoDispositivo.bateria:
         return 'Bateria';

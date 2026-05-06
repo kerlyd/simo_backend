@@ -169,8 +169,11 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
     final reward = _rewards[index];
     final isSelected = _selectedRewardIndex == index;
 
+    final displayNombre = reward.nombre.replaceAll('Selfy´s', "Betty's").replaceAll("Selfy's", "Betty's");
+    final displayDescripcion = reward.descripcion.replaceAll('Selfy´s', "Betty's").replaceAll("Selfy's", "Betty's");
+
     String logoPath = 'falabella.png';
-    final searchString = '${reward.nombre} ${reward.descripcion}'.toLowerCase();
+    final searchString = '${displayNombre} ${displayDescripcion}'.toLowerCase();
     
     final Map<String, String> localMapping = {
       'falabella': 'falabella.png',
@@ -237,7 +240,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          reward.nombre,
+                          displayNombre,
                           style: const TextStyle(
                             color: textoOscuro,
                             fontWeight: FontWeight.w700,
@@ -246,7 +249,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          reward.descripcion,
+                          displayDescripcion,
                           style: const TextStyle(
                             color: Color(0xFF7B7B7B),
                             fontSize: 12,

@@ -30,7 +30,20 @@ class NotificacionCard extends StatelessWidget {
         .replaceAll('ú', 'u');
 
     if (titulo.contains('canje')) {
-      return 'assets/icons/flor.png'; // Icono para canje
+      if (desc.contains('bosque') || desc.contains('cafe')) return 'assets/imagenes/canjear/sabor_bosque.png';
+      if (desc.contains('verdeo')) return 'assets/imagenes/canjear/verdeo.png';
+      if (desc.contains('alkatronic')) return 'assets/imagenes/canjear/alkatronic.png';
+      if (desc.contains('betty') || desc.contains('selfy')) return 'assets/imagenes/canjear/bettys.png';
+      if (desc.contains('cine')) return 'assets/imagenes/canjear/cine.png';
+      if (desc.contains('civica') || desc.contains('cívica')) return 'assets/imagenes/canjear/civica.png';
+      if (desc.contains('falabella')) return 'assets/imagenes/canjear/falabella.png';
+      if (desc.contains('h&m') || desc.contains('hym')) return 'assets/imagenes/canjear/hym.png';
+      if (desc.contains('jumbo')) return 'assets/imagenes/canjear/jumbo.png';
+      if (desc.contains('koaj')) return 'assets/imagenes/canjear/koaj.png';
+      if (desc.contains('puntos colombia')) return 'assets/imagenes/canjear/puntos_colombia.png';
+      if (desc.contains('acampar')) return 'assets/imagenes/canjear/acampar.png';
+
+      return 'assets/icons/flor.png'; // Fallback genérico
     }
 
     if (titulo.contains('reciclaje')) {
@@ -38,6 +51,15 @@ class NotificacionCard extends StatelessWidget {
       if (desc.contains('tablet')) return 'assets/icons/tablet_icono.png';
       if (desc.contains('laptop') || desc.contains('portatil') || desc.contains('computador')) return 'assets/imagenes/opciones/laptop.png';
       if (desc.contains('bateria') || desc.contains('pilas')) return 'assets/icons/image 4 (2).png';
+      if (desc.contains('consola')) return 'assets/imagenes/opciones/consolasdejuegos.png';
+      if (desc.contains('licuadora')) return 'assets/imagenes/opciones/licuadora.png';
+      if (desc.contains('cargador') || desc.contains('cable')) return 'assets/imagenes/opciones/cargadores.png';
+      if (desc.contains('microondas')) return 'assets/imagenes/opciones/microondas.png';
+      if (desc.contains('mouse') || desc.contains('teclado')) return 'assets/imagenes/opciones/mouse.png';
+      if (desc.contains('pantalla') || desc.contains('tv') || desc.contains('televisor')) return 'assets/imagenes/opciones/tv.png';
+      if (desc.contains('plancha')) return 'assets/imagenes/opciones/plancha.png';
+      if (desc.contains('refrigerador') || desc.contains('nevera')) return 'assets/imagenes/opciones/refrigerador.png';
+      if (desc.contains('ventilador')) return 'assets/imagenes/opciones/ventilador.png';
     }
 
     switch (notificacion.tipoDispositivo) {
@@ -72,6 +94,15 @@ class NotificacionCard extends StatelessWidget {
       if (desc.contains('tablet')) return 'Tablet';
       if (desc.contains('laptop') || desc.contains('portatil') || desc.contains('computador')) return 'Laptop';
       if (desc.contains('bateria') || desc.contains('pilas')) return 'Batería';
+      if (desc.contains('consola')) return 'Consola';
+      if (desc.contains('licuadora')) return 'Licuadora';
+      if (desc.contains('cargador') || desc.contains('cable')) return 'Cables';
+      if (desc.contains('microondas')) return 'Microondas';
+      if (desc.contains('mouse') || desc.contains('teclado')) return 'Periférico';
+      if (desc.contains('pantalla') || desc.contains('tv') || desc.contains('televisor')) return 'Pantalla/TV';
+      if (desc.contains('plancha')) return 'Plancha';
+      if (desc.contains('refrigerador') || desc.contains('nevera')) return 'Refrigerador';
+      if (desc.contains('ventilador')) return 'Ventilador';
     }
 
     switch (notificacion.tipoDispositivo) {
@@ -166,7 +197,7 @@ class NotificacionCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Expanded(
                     child: Text(
-                      notificacion.descripcion,
+                      notificacion.descripcion.replaceAll('por reciclar tu ', 'por reciclar: ').replaceAll('Selfy´s Bowls', "Betty's Bowls").replaceAll("Selfy's Bowls", "Betty's Bowls"),
                       style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w500, color: _textoDark.withValues(alpha: 0.85), height: 1.2),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
