@@ -11,6 +11,7 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
   static const Color simoMagenta = Color(0xFFD8006B);
   static const Color simoCrudo = Color(0xFFFFFCE7);
   static const Color textoOscuro = Color(0xFF333333);
+  static const Color simoAmarillo = Color(0xFFF5B800);
 
   int _selectedNavIndex = 2;
 
@@ -94,93 +95,45 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
           ],
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 24),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFFCE7),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: simoCrudo,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              ),
+            ),
+            padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).maybePop(),
+                    child: const Icon(Icons.arrow_back_ios_new, size: 36, color: textoOscuro),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 18,
-                ),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        } else {
-                          _showMessage('No hay pantalla anterior para volver.');
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(14),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'assets/imagenes/canjear/atras.png',
-                            width: 18,
-                            height: 18,
-                          ),
-                        ),
-                      ),
+                const Spacer(),
+                Image.asset('assets/imagenes/canjear/simo.png', height: 48),
+                const Spacer(),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/notificaciones'),
+                    child: Image.asset(
+                      'assets/imagenes/canjear/notificacion.png',
+                      width: 42,
+                      height: 42,
                     ),
-                    const Spacer(),
-                    Image.asset('assets/imagenes/canjear/simo.png', height: 32),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () => Navigator.pushNamed(context, '/notificaciones'),
-                      borderRadius: BorderRadius.circular(14),
-                      child: Stack(
-                        alignment: Alignment.topRight,
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Center(
-                              child: Image.asset(
-                                'assets/imagenes/canjear/notificacion.png',
-                                width: 24,
-                                height: 24,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            right: 9,
-                            top: 8,
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF2D4EA2),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
+            ),
+          ),
               const SizedBox(height: 12),
               Expanded(
                 child: Padding(
@@ -271,8 +224,6 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
               ),
             ],
           ),
-        ),
-      ),
     );
   }
 
@@ -282,60 +233,60 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-              child: Image.asset(
-                'assets/imagenes/canjear/$logoName',
-                fit: BoxFit.contain,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                child: Image.asset(
+                  'assets/imagenes/canjear/$logoName',
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
-          ),
-          Container(
-            width: 96,
-            decoration: const BoxDecoration(
-              color: Color(0xFFF5B800),
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(24),
-                bottomRight: Radius.circular(24),
+            Container(
+              width: 96,
+              decoration: const BoxDecoration(
+                color: simoAmarillo,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(24),
+                  bottomRight: Radius.circular(24),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imagenes/canjear/flor_negro.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    points,
+                    style: const TextStyle(
+                      color: textoOscuro,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Canjear',
+                    style: TextStyle(
+                      color: textoOscuro,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/imagenes/canjear/flor_negro.png',
-                  width: 24,
-                  height: 24,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  points,
-                  style: const TextStyle(
-                    color: textoOscuro,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Canjear',
-                  style: TextStyle(
-                    color: textoOscuro,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
