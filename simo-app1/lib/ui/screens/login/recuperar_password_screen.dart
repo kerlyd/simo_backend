@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
-import 'link_recuperacion_screen.dart';
 
 class RecuperarPasswordScreen extends StatefulWidget {
   const RecuperarPasswordScreen({super.key});
@@ -14,6 +13,7 @@ class RecuperarPasswordScreen extends StatefulWidget {
 class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
   final _correoController = TextEditingController();
   bool _cargando = false;
+  bool _enviado = false;
 
   @override
   void dispose() {
@@ -31,31 +31,43 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
       return;
     }
 
+    // Validación básica de formato de email
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+    if (!emailRegex.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ingresa un correo válido')),
+      );
+      return;
+    }
+
     setState(() => _cargando = true);
 
     try {
-      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+      final dio = Dio(BaseOptions(
+        baseUrl: 'http://192.168.1.4:3000',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ));
       await dio.post('/api/auth/recuperar', data: {'email': email});
 
       if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LinkRecuperacionScreen(email: email!),
-          ),
-        );
+        setState(() {
+          _cargando = false;
+          _enviado = true;
+        });
       }
     } on DioException catch (e) {
       if (mounted) {
+        setState(() => _cargando = false);
+        final msg =
+            e.response?.data?['error'] ?? 'Error al enviar. Intenta de nuevo.';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.response?.data['message'] ?? 'Error al enviar'),
-            backgroundColor: Colors.red,
+            content: Text(msg),
+            backgroundColor: Colors.red.shade700,
           ),
         );
       }
-    } finally {
-      if (mounted) setState(() => _cargando = false);
     }
   }
 
@@ -67,87 +79,151 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  '¡ RECUPERA TU\nCONTRASEÑA !',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    fontSize: 45,
-                    fontWeight: FontWeight.w900,
-                    color: const Color(0xFFdb007f),
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Te enviaremos un enlace para restablecer\ntu contraseña y que puedas volver a\nentrar a tu cuenta.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFFdb007f),
-                  ),
-                ),
-                const SizedBox(height: 48),
-                Text(
-                  'Correo electrónico',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFFdb007f),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 48,
-                  child: TextField(
-                    controller: _correoController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 48),
-                Center(
-                  child: SizedBox(
-                    width: 240,
-                    child: ElevatedButton(
-                      onPressed: _cargando ? null : _enviarEnlace,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFdb007f),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 25),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      child: _cargando
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'ENVIAR ENLACE',
-                              style: GoogleFonts.outfit(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            child: _enviado ? _buildSuccessView() : _buildFormView(),
           ),
         ),
       ),
+    );
+  }
+
+  // ── Vista de éxito (después de enviar el correo) ──────────
+  Widget _buildSuccessView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.mark_email_read_rounded,
+          size: 80,
+          color: Color(0xFFdb007f),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          '¡ CORREO ENVIADO !',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.outfit(
+            fontSize: 36,
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFFdb007f),
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Revisa tu bandeja de entrada en\n${_correoController.text.trim()}\n\nToca el enlace del correo para restablecer tu contraseña.\n\n(El enlace expira en 15 minutos)',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.outfit(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFFdb007f),
+          ),
+        ),
+        const SizedBox(height: 48),
+        Center(
+          child: SizedBox(
+            width: 240,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFFdb007f),
+                side: const BorderSide(color: Color(0xFFdb007f), width: 2),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: Text(
+                'VOLVER AL LOGIN',
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Vista del formulario ──────────────────────────────────
+  Widget _buildFormView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          '¡ RECUPERA TU\nCONTRASEÑA !',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.outfit(
+            fontSize: 45,
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFFdb007f),
+            height: 1.1,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Te enviaremos un enlace para restablecer\ntu contraseña y que puedas volver a\nentrar a tu cuenta.',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.outfit(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFFdb007f),
+          ),
+        ),
+        const SizedBox(height: 48),
+        Text(
+          'Correo electrónico',
+          style: GoogleFonts.outfit(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFFdb007f),
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 48,
+          child: TextField(
+            controller: _correoController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: const Color(0xFFdb007f).withOpacity(0.50),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 48),
+        Center(
+          child: SizedBox(
+            width: 240,
+            child: ElevatedButton(
+              onPressed: _cargando ? null : _enviarEnlace,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFdb007f),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 25),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: _cargando
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(
+                      'ENVIAR ENLACE',
+                      style: GoogleFonts.outfit(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
