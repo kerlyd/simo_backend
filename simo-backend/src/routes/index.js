@@ -1,9 +1,12 @@
 // ─── Auth ──────────────────────────────────────────────
 const express = require('express');
 const authRouter = express.Router();
-const { register, login } = require('../controllers/authController');
+const { register, login, recuperarPassword, resetRedirect, resetPassword } = require('../controllers/authController');
 authRouter.post('/register', register);
 authRouter.post('/login', login);
+authRouter.post('/recuperar', recuperarPassword);
+authRouter.get('/reset-redirect', resetRedirect);
+authRouter.post('/reset-password', resetPassword);
 
 // ─── Usuario ───────────────────────────────────────────
 const usuarioRouter = express.Router();

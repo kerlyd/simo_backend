@@ -17,16 +17,22 @@ class _RolSelectionScreenState extends State<RolSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final res = Responsive.of(context);
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF7F4EC),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: res.maxFormWidth),
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: res.wp(10)),
-              child: Column(
+        bottom: false,
+        child: Column(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: const Alignment(0, 0.65),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: res.maxFormWidth),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: res.wp(10)),
+                    child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -235,14 +241,19 @@ class _RolSelectionScreenState extends State<RolSelectionScreen> {
                     ),
                   ),
                   SizedBox(height: res.hp(4)),
-                  Image.asset(
-                    'assets/images/cabeza.png',
-                    height: res.hp(12),
-                  ),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+            if (!isKeyboardOpen)
+              Image.asset(
+                'assets/images/cabeza.png',
+                height: res.hp(12),
+                alignment: Alignment.bottomCenter,
+              ),
+          ],
         ),
       ),
     );

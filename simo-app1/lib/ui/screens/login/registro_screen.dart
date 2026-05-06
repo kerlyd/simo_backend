@@ -106,7 +106,7 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
       backgroundColor: const Color(0xFFF7F4EC),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          padding: const EdgeInsets.only(left: 24, right: 24, top: 80, bottom: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -249,7 +249,7 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
                 ver: _verPassword,
                 onVerTap: () => setState(() => _verPassword = !_verPassword),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
               _buildCampoPassword(
                 controller: _confirmarPasswordController,
                 hint: 'Confirmar Contraseña',
@@ -261,22 +261,22 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
               const SizedBox(height: 32),
               Center(
                 child: SizedBox(
-                  width: 220,
+                  width: 320,
                   child: ElevatedButton(
                     onPressed: authState is AuthLoading ? null : _register,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFdb007f),
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     child: authState is AuthLoading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            'Crear Cuenta',
+                            'CREAR CUENTA',
                             style: GoogleFonts.outfit(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
