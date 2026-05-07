@@ -231,20 +231,20 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/imagenes/canjear/$logoPath',
-                            width: 110,
-                            height: 26,
-                            fit: BoxFit.contain,
-                          ),
-                          const SizedBox(height: 12),
                           Text(
                             reward.nombre,
                             style: const TextStyle(
-                              color: textoOscuro,
+                              color: simoMagenta,
                               fontWeight: FontWeight.w700,
                               fontSize: 14,
                             ),
+                          ),
+                          const SizedBox(height: 8),
+                          Image.asset(
+                            'assets/imagenes/canjear/$logoPath',
+                            width: 110,
+                            height: 32,
+                            fit: BoxFit.contain,
                           ),
                           const SizedBox(height: 6),
                           Text(
@@ -270,7 +270,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                       ),
                       onTap: () => _onCanjearTap(index),
                       child: Container(
-                        width: 96,
+                        width: 110,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 14,
@@ -285,27 +285,32 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'assets/imagenes/canjear/flor_negro.png',
-                              width: 24,
-                              height: 24,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/imagenes/canjear/flor_negro.png',
+                                  width: 28,
+                                  height: 28,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${reward.puntosRequeridos}',
+                                  style: const TextStyle(
+                                    color: textoOscuro,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${reward.puntosRequeridos}',
-                              style: const TextStyle(
-                                color: textoOscuro,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 4),
                             const Text(
                               'Canjear',
                               style: TextStyle(
                                 color: textoOscuro,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                                fontSize: 14,
                               ),
                             ),
                           ],
@@ -391,37 +396,36 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                   horizontal: 20,
                   vertical: 24,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Image.asset(
-                      'assets/imagenes/canjear/flor.png',
-                      width: 42,
-                      height: 42,
-                    ),
-                    const SizedBox(width: 18),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Image.asset(
+                          'assets/imagenes/canjear/flor.png',
+                          width: 80,
+                          height: 80,
+                        ),
+                        const SizedBox(width: 16),
                         Text(
                           '${ref.watch(authProvider).usuario?.puntosVerdes ?? 0}',
                           style: const TextStyle(
                             color: textoOscuro,
                             fontWeight: FontWeight.w800,
-                            fontSize: 42,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          '¡Tu aporte al planeta está registrado!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: textoOscuro,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 80,
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      '¡Tu aporte al planeta está registrado!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: textoOscuro,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -462,8 +466,3 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                       ),
                     ),
             ),
-          ],
-        ),
-    );
-  }
-}

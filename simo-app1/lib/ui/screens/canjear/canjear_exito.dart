@@ -247,7 +247,7 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
               ),
             ),
             Container(
-              width: 96,
+              width: 110,
               decoration: const BoxDecoration(
                 color: simoAmarillo,
                 borderRadius: BorderRadius.only(
@@ -259,27 +259,32 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/imagenes/canjear/flor_negro.png',
-                    width: 24,
-                    height: 24,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/imagenes/canjear/flor_negro.png',
+                        width: 28,
+                        height: 28,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        points,
+                        style: const TextStyle(
+                          color: textoOscuro,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    points,
-                    style: const TextStyle(
-                      color: textoOscuro,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   const Text(
                     'Canjear',
                     style: TextStyle(
                       color: textoOscuro,
                       fontWeight: FontWeight.w600,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                 ],
