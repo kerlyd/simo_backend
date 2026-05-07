@@ -171,7 +171,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
 
     String logoPath = 'falabella.png';
     final searchString = '${reward.nombre} ${reward.descripcion}'.toLowerCase();
-    
+
     final Map<String, String> localMapping = {
       'falabella': 'falabella.png',
       'puntos': 'puntos_colombia.png',
@@ -354,7 +354,8 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                 bottomRight: Radius.circular(24),
               ),
             ),
-            padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
+            padding: EdgeInsets.fromLTRB(
+                16, MediaQuery.of(context).padding.top + 16, 16, 24),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -363,7 +364,8 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                   child: GestureDetector(
                     onTap: () =>
                         Navigator.pushReplacementNamed(context, '/home'),
-                    child: const Icon(Icons.arrow_back_ios_new, size: 36, color: textoOscuro),
+                    child: const Icon(Icons.arrow_back_ios_new,
+                        size: 36, color: textoOscuro),
                   ),
                 ),
                 const Spacer(),
@@ -372,7 +374,8 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/notificaciones'),
+                    onTap: () =>
+                        Navigator.pushNamed(context, '/notificaciones'),
                     child: Image.asset(
                       'assets/imagenes/canjear/notificacion.png',
                       width: 42,
@@ -383,91 +386,91 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
               ],
             ),
           ),
-            const SizedBox(height: 18),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7E6),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 24,
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/imagenes/canjear/flor.png',
-                          width: 80,
-                          height: 80,
+          const SizedBox(height: 18),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF7E6),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 24,
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/imagenes/canjear/flor.png',
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        '${ref.watch(authProvider).usuario?.puntosVerdes ?? 0}',
+                        style: const TextStyle(
+                          color: textoOscuro,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 80,
                         ),
-                        const SizedBox(width: 16),
-                        Text(
-                          '${ref.watch(authProvider).usuario?.puntosVerdes ?? 0}',
-                          style: const TextStyle(
-                            color: textoOscuro,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 80,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '¡Tu aporte al planeta está registrado!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: textoOscuro,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'Aprovecha tus puntos y gracias por ser parte del cambio',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Expanded(
+            child: _loading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Colors.white))
+                : SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Column(
+                      children: List.generate(_rewards.length, (index) {
+                        final card = _buildRewardCard(index);
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: index == _rewards.length - 1 ? 20 : 14,
                           ),
-                        ),
-                      ],
+                          child: card,
+                        );
+                      }),
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      '¡Tu aporte al planeta está registrado!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: textoOscuro,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                'Aprovecha tus puntos y gracias por ser parte del cambio',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Expanded(
-              child: _loading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Colors.white))
-                  : SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 5),
-                      child: Column(
-                        children: List.generate(_rewards.length, (index) {
-                          final card = _buildRewardCard(index);
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom: index == _rewards.length - 1 ? 20 : 14,
-                            ),
-                            child: card,
-                          );
-                        }),
-                      ),
-                    ),
-            ),
-          ],
-        ),
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

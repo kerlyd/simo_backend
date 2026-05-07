@@ -106,7 +106,8 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
                 bottomRight: Radius.circular(24),
               ),
             ),
-            padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
+            padding: EdgeInsets.fromLTRB(
+                16, MediaQuery.of(context).padding.top + 16, 16, 24),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -114,7 +115,8 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
                     onTap: () => Navigator.of(context).maybePop(),
-                    child: const Icon(Icons.arrow_back_ios_new, size: 36, color: textoOscuro),
+                    child: const Icon(Icons.arrow_back_ios_new,
+                        size: 36, color: textoOscuro),
                   ),
                 ),
                 const Spacer(),
@@ -123,7 +125,8 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
                 MouseRegion(
                   cursor: SystemMouseCursors.click,
                   child: GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/notificaciones'),
+                    onTap: () =>
+                        Navigator.pushNamed(context, '/notificaciones'),
                     child: Image.asset(
                       'assets/imagenes/canjear/notificacion.png',
                       width: 42,
@@ -134,100 +137,100 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
               ],
             ),
           ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFFCE7),
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: const Color(0xFF2D4EA2),
-                            width: 2,
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 24,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            Text(
-                              '¡Listo! Canjeaste tus puntos',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: textoOscuro,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Gracias por ayudar al planeta. Ya puedes disfrutar tu recompensa.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: textoOscuro,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            Text(
-                              'Revisa tu correo electrónico y disfruta tu recompensa.\nAllí encontrarás cómo usar tu beneficio.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: textoOscuro,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFCE7),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: const Color(0xFF2D4EA2),
+                        width: 2,
                       ),
-                      const SizedBox(height: 12),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          'Aprovecha tus puntos y gracias por ser parte del cambio',
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Text(
+                          '¡Listo! Canjeaste tus puntos',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: textoOscuro,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Gracias por ayudar al planeta. Ya puedes disfrutar tu recompensa.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: textoOscuro,
                             fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            children: [
-                              _buildRewardCard('falabella.png', '1200'),
-                              const SizedBox(height: 10),
-                              _buildRewardCard('puntos_colombia.png', '900'),
-                              const SizedBox(height: 10),
-                              _buildRewardCard('bettys.png', '1200'),
-                            ],
+                        SizedBox(height: 12),
+                        Text(
+                          'Revisa tu correo electrónico y disfruta tu recompensa.\nAllí encontrarás cómo usar tu beneficio.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: textoOscuro,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 12),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      'Aprovecha tus puntos y gracias por ser parte del cambio',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          _buildRewardCard('falabella.png', '1200', '50% Descuento en Productos'),
+                          const SizedBox(height: 10),
+                          _buildRewardCard('puntos_colombia.png', '900', '200 Puntos Colombia'),
+                          const SizedBox(height: 10),
+                          _buildRewardCard('bettys.png', '1200', '45% Descuento en comida'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
+        ],
+      ),
     );
   }
 
-  Widget _buildRewardCard(String logoName, String points) {
+  Widget _buildRewardCard(String logoName, String points, String title) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -239,10 +242,26 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                child: Image.asset(
-                  'assets/imagenes/canjear/$logoName',
-                  fit: BoxFit.contain,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: simoMagenta,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Image.asset(
+                      'assets/imagenes/canjear/$logoName',
+                      height: 50,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
                 ),
               ),
             ),
