@@ -1,7 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../domain/entities/detalle_solicitud_entity.dart';
-import '../../domain/entities/historial_entity.dart';
-import '../../domain/entities/notificacion_entity.dart';
 import '../models/detalle_solicitud_model.dart';
 
 abstract class SolicitudRemoteDataSource {

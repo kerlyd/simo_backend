@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/widgetsopciones/simo_header.dart';
 import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
@@ -153,26 +154,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Hola soy SIMÖ ¿Sabías que...?',
-            style: TextStyle(
-              fontSize: 18,
+            style: GoogleFonts.outfit(
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF333333),
+              color: const Color(0xFF333333),
             ),
           ),
           const SizedBox(height: 12),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
                 flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Un celular reciclado correctamente puede recuperar materiales reutilizables como oro, cobre y aluminio.',
-                      style: TextStyle(fontSize: 12, color: Colors.black87),
+                      style: GoogleFonts.outfit(
+                        fontSize: 13,
+                        color: Colors.black87,
+                        height: 1.3,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -182,25 +186,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         foregroundColor: Colors.black87,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                            horizontal: 20, vertical: 10),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Cuentame mas...',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 12),
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 10),
               Expanded(
                 flex: 2,
-                child: Center(
-                  child: Image.asset('assets/images/cabeza.png',
-                      height: 80), // Robot head
+                child: Image.asset(
+                  'assets/imagenes/opciones/robotinicio.png',
+                  height: 110,
+                  fit: BoxFit.contain,
                 ),
               ),
             ],
@@ -217,7 +225,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Column(
             children: [
               _buildSquareButton(
-                icon: Icons.card_giftcard,
+                imagePath: 'assets/imagenes/opciones/regaloinicio.png',
                 iconColor: const Color(0xFFE88A96),
                 title: 'Recompensas',
                 onTap: () => Navigator.pushNamed(context, '/canjear'),
@@ -239,7 +247,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/opciones'),
               child: Container(
-              height: 236, // Approximate height for two stacked buttons + gap
+              height: 236,
               decoration: BoxDecoration(
                 color: AppColors.simoCrudo,
                 borderRadius: BorderRadius.circular(20),
@@ -249,13 +257,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 children: [
                   Image.asset(
                     'assets/imagenes/usuario/reciclaje.png',
-                    height: 120,
+                    height: 130,
                     fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Text(
                     '¡Reciclar!',
-                    style: TextStyle(
+                    style: GoogleFonts.outfit(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColors.simoAzul,
@@ -272,7 +280,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildSquareButton({
-    required IconData icon,
+    IconData? icon,
+    String? imagePath,
     required Color iconColor,
     required String title,
     required VoidCallback onTap,
@@ -282,27 +291,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-        width: double.infinity,
-        height: 110,
-        decoration: BoxDecoration(
-          color: AppColors.simoCrudo,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 48, color: iconColor),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF333333),
+          width: double.infinity,
+          height: 110,
+          decoration: BoxDecoration(
+            color: AppColors.simoCrudo,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (imagePath != null)
+                Image.asset(imagePath, height: 50, fit: BoxFit.contain)
+              else if (icon != null)
+                Icon(icon, size: 48, color: iconColor),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: GoogleFonts.outfit(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF333333),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -364,167 +376,168 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final iconPath = _getIconPath(disp.nombre);
 
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: AppColors.simoCrudo,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        children: [
-          // Icono del dispositivo
-          Container(
-            width: 100,
-            height: 100,
-            decoration: const BoxDecoration(
-              color: AppColors.simoAmarillo,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Icono del dispositivo
+            Container(
+              width: 100,
+              decoration: const BoxDecoration(
+                color: AppColors.simoAmarillo,
               ),
-            ),
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(iconPath, height: 56, fit: BoxFit.contain),
-                const SizedBox(height: 4),
-                Text(
-                  disp.nombre,
-                  style: const TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF424242),
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+              padding: const EdgeInsets.all(10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset(iconPath, height: 56, fit: BoxFit.contain),
+                  const SizedBox(height: 4),
                   Text(
                     disp.nombre,
                     style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF424242),
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      disp.nombre,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Color(0xFF333333),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      disp.descripcion ?? 'Artículo disponible para reciclar',
+                      style: const TextStyle(fontSize: 11, color: Colors.black54),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.simoAzul.withAlpha(30),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        'Disponible',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.simoAzul,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/imagenes/canjear/flor.png',
+                    height: 22,
+                    width: 22,
+                    fit: BoxFit.contain,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${disp.puntos}',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 18,
                       color: Color(0xFF333333),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    disp.descripcion ?? 'Artículo disponible para reciclar',
-                    style: const TextStyle(fontSize: 11, color: Colors.black54),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppColors.simoAzul.withAlpha(30),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      'Disponible',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.simoAzul,
-                      ),
+                  const Text(
+                    'pts',
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Color(0xFF888888),
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/imagenes/canjear/flor.png',
-                  height: 22,
-                  width: 22,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  '${disp.puntos}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Color(0xFF333333),
-                  ),
-                ),
-                const Text(
-                  'pts',
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: Color(0xFF888888),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildImpactCard() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.simoCrudo,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '¡Impacto con SIMÖ!',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.simoAzul,
-            ),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: AppColors.simoCrudo,
+            borderRadius: BorderRadius.circular(20),
           ),
-          const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
               Expanded(
-                flex: 6,
+                flex: 7,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
+                    Text(
+                      '¡Impacto con SIMÖ!',
+                      style: GoogleFonts.outfit(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.simoAzul,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Text(
                       'Has reciclado 3 dispositivos\nEvitaste 12 kg de residuos electrónicos',
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: GoogleFonts.outfit(
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     Text(
                       'Dale click a SIMÖ y descubre más en nuestro sitio web.',
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
+                      style: GoogleFonts.outfit(
+                        fontSize: 13,
+                        color: Colors.black54,
+                      ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     Text(
                       '¡Muchas gracias, Por tu ayudar!',
-                      style: TextStyle(
-                        fontSize: 13,
+                      style: GoogleFonts.outfit(
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -532,17 +545,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: Center(
-                  child: Image.asset('assets/images/robot.png',
-                      height: 120), // Placeholder for robot
-                ),
-              ),
+              const Spacer(flex: 3), // Menos espacio para evitar que el bloque se alargue
             ],
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          right: -100,
+          top: 0,
+          bottom: 0,
+          child: Align(
+            alignment: Alignment.center,
+            child: Transform.rotate(
+              angle: -1.45, // Rotado 5 grados más
+              child: Image.asset(
+                'assets/images/robot.png',
+                height: 180,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

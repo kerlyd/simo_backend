@@ -19,7 +19,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
   static const Color simoCrudo = Color(0xFFF7F4EC);
   static const Color textoOscuro = Color(0xFF333333);
 
-  int _selectedNavIndex = 2;
+  final int _selectedNavIndex = 2;
   int _selectedRewardIndex = -1;
 
   List<RecompensaModel> _rewards = [];

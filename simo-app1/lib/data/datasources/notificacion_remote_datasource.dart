@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../../domain/entities/notificacion_entity.dart';
 import '../models/notificacion_model.dart';
 
 // Única capa que habla con el backend (o datos mock durante desarrollo).

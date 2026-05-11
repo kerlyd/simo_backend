@@ -110,48 +110,54 @@ class _RegistroScreenState extends ConsumerState<RegistroScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 200,
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      left: -50,
-                      top: 90,
-                      child: Transform.rotate(
-                        angle: math.pi / 2,
-                        child: Image.asset(
-                          'assets/images/robot.png',
-                          height: 130,
+              Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: SizedBox(
+                    width: 350,
+                    height: 200,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          left: -50,
+                          top: 90,
+                          child: Transform.rotate(
+                            angle: math.pi / 2,
+                            child: Image.asset(
+                              'assets/images/robot.png',
+                              height: 130,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 15,
-                      top: -10,
-                      child: Text(
-                        'Únete a',
-                        style: GoogleFonts.outfit(
-                          fontSize: 80,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFFdb007f),
+                        Positioned(
+                          left: 15,
+                          top: -10,
+                          child: Text(
+                            'Únete a',
+                            style: GoogleFonts.outfit(
+                              fontSize: 80,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFFdb007f),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 100,
-                      top: 90,
-                      child: Text(
-                        'SIMÖ',
-                        style: GoogleFonts.outfit(
-                          fontSize: 100,
-                          fontWeight: FontWeight.w900,
-                          color: const Color(0xFFdb007f),
-                          height: 0.9,
+                        Positioned(
+                          left: 100,
+                          top: 90,
+                          child: Text(
+                            'SIMÖ',
+                            style: GoogleFonts.outfit(
+                              fontSize: 100,
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xFFdb007f),
+                              height: 0.9,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               const SizedBox(height: 32),

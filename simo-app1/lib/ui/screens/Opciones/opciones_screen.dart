@@ -8,8 +8,6 @@ import '../../providers/auth_notifier.dart';
 import 'busqueda_screen.dart';
 import 'detalle_solicitud_screen.dart';
 import '../../../data/models/dispositivo_model.dart';
-import '../../../data/datasources/dispositivo_remote_datasource.dart';
-import '../../../injection_container.dart';
 
 class OpcionesScreen extends ConsumerStatefulWidget {
   const OpcionesScreen({super.key});
@@ -41,11 +39,19 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
   // Búsqueda flexible por palabras clave (ignora mayúsculas, tildes, etc.)
   String _getIconPath(String nombre) {
     final n = nombre.toLowerCase();
-    if (n.contains('celular') || n.contains('telefon') || n.contains('smartphone')) {
+    if (n.contains('celular') ||
+        n.contains('telefon') ||
+        n.contains('smartphone')) {
       return 'assets/imagenes/opciones/celular.png';
-    } else if (n.contains('laptop') || n.contains('computador') || n.contains('portátil') || n.contains('portatil')) {
+    } else if (n.contains('laptop') ||
+        n.contains('computador') ||
+        n.contains('portátil') ||
+        n.contains('portatil')) {
       return 'assets/imagenes/opciones/laptop.png';
-    } else if (n.contains('tv') || n.contains('televisor') || n.contains('pantalla') || n.contains('monitor')) {
+    } else if (n.contains('tv') ||
+        n.contains('televisor') ||
+        n.contains('pantalla') ||
+        n.contains('monitor')) {
       return 'assets/imagenes/opciones/tv.png';
     } else if (n.contains('refrig') || n.contains('nevera')) {
       return 'assets/imagenes/opciones/refrigerador.png';
@@ -53,11 +59,17 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
       return 'assets/imagenes/opciones/cables.png';
     } else if (n.contains('batería') || n.contains('bateria')) {
       return 'assets/imagenes/opciones/bateria.png';
-    } else if (n.contains('tablet') || n.contains('tableta') || n.contains('ipad')) {
+    } else if (n.contains('tablet') ||
+        n.contains('tableta') ||
+        n.contains('ipad')) {
       return 'assets/imagenes/opciones/tablet_icono.png';
-    } else if (n.contains('consola') || n.contains('juego') || n.contains('gaming')) {
+    } else if (n.contains('consola') ||
+        n.contains('juego') ||
+        n.contains('gaming')) {
       return 'assets/imagenes/opciones/consolasdejuegos.png';
-    } else if (n.contains('mouse') || n.contains('teclado') || n.contains('ratón')) {
+    } else if (n.contains('mouse') ||
+        n.contains('teclado') ||
+        n.contains('ratón')) {
       return 'assets/imagenes/opciones/mouse.png';
     } else if (n.contains('microondas')) {
       return 'assets/imagenes/opciones/microondas.png';
@@ -173,37 +185,39 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
               // ── Grid de dispositivos ───────────────────────────
               Expanded(
                 flex: selectedDispositivo == null ? 5 : 3,
-                child: _loading 
-                  ? const Center(child: CircularProgressIndicator(color: AppColors.simoAmarillo))
-                  : Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                child: _loading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.simoAmarillo))
+                    : Column(
                         children: [
-                          Expanded(child: _buildGridItem(0)),
-                          const SizedBox(width: 8),
-                          Expanded(child: _buildGridItem(1)),
-                          const SizedBox(width: 8),
-                          Expanded(child: _buildGridItem(2)),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(child: _buildGridItem(0)),
+                                const SizedBox(width: 8),
+                                Expanded(child: _buildGridItem(1)),
+                                const SizedBox(width: 8),
+                                Expanded(child: _buildGridItem(2)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(child: _buildGridItem(3)),
+                                const SizedBox(width: 8),
+                                Expanded(child: _buildGridItem(4)),
+                                const SizedBox(width: 8),
+                                Expanded(child: _buildGridItem(5)),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(child: _buildGridItem(3)),
-                          const SizedBox(width: 8),
-                          Expanded(child: _buildGridItem(4)),
-                          const SizedBox(width: 8),
-                          Expanded(child: _buildGridItem(5)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
 
               const SizedBox(height: 8),
@@ -393,7 +407,8 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
               // Sección Cruda (Derecha)
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                   child: Row(
                     children: [
                       Expanded(

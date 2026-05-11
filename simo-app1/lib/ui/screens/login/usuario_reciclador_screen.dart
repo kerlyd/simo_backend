@@ -77,22 +77,30 @@ class _UsuarioRecicladorScreenState
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          '¡ HOLA !',
-                          style: GoogleFonts.outfit(
-                            fontSize: res.sp(44),
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFFdb007f),
-                            height: 1.1,
+                        FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '¡ HOLA !',
+                            style: GoogleFonts.outfit(
+                              fontSize: res.sp(44),
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xFFdb007f),
+                              height: 1.1,
+                            ),
                           ),
                         ),
-                        Text(
-                          'BIENVENIDO',
-                          style: GoogleFonts.outfit(
-                            fontSize: res.sp(44),
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFFdb007f),
-                            height: 1.1,
+                        FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'BIENVENIDO',
+                            style: GoogleFonts.outfit(
+                              fontSize: res.sp(44),
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xFFdb007f),
+                              height: 1.1,
+                            ),
                           ),
                         ),
                         SizedBox(height: res.hp(4)),

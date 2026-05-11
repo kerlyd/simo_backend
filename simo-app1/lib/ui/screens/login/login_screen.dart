@@ -80,24 +80,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          '¡ HOLA !',
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.outfit(
-                            fontSize: res.sp(45),
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFFdb007f),
-                            height: 1.1,
+                        FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            '¡ HOLA !',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.outfit(
+                              fontSize: res.sp(45),
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xFFdb007f),
+                              height: 1.1,
+                            ),
                           ),
                         ),
-                        Text(
-                          'BIENVENIDO',
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.outfit(
-                            fontSize: res.sp(45),
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFFdb007f),
-                            height: 1.1,
+                        FittedBox(
+                          alignment: Alignment.centerLeft,
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'BIENVENIDO',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.outfit(
+                              fontSize: res.sp(45),
+                              fontWeight: FontWeight.w900,
+                              color: const Color(0xFFdb007f),
+                              height: 1.1,
+                            ),
                           ),
                         ),
                         SizedBox(height: res.hp(4)),
