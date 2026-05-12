@@ -1,26 +1,32 @@
-const { Resend } = require('resend');
-
-// Usamos Resend por API (HTTP) porque Railway bloquea los puertos de correo (SMTP)
-// Usaremos la API KEY de Resend que ya tenías o una de prueba
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dYLJ8m8h_CwDTvYJHsd4knTikDhnCtLg2');
-
 /**
- * Envía un correo electrónico usando la API de Resend
+ * Envía un correo electrónico usando el Puente de Google Apps Script
+ * Esto evita los bloqueos de puertos SMTP de Railway.
  */
 async function enviarCorreo(to, subject, html) {
+  const bridgeUrl = 'https://script.google.com/macros/s/AKfycbxqt9hneOkHvLHPj_Yxlh_egEJZWfibC1-UTHyq_tyb9tXZexOxCGe647KmnYPqvyxIlQ/exec';
+
   try {
-    console.log('Solicitando envío a Resend API...');
-    const data = await resend.emails.send({
-      from: 'SIMÖ <onboarding@resend.dev>', // Dominio de prueba de Resend que SIEMPRE funciona
-      to: to,
-      subject: subject,
-      html: html,
-    });
+    console.log('Enviando correo a través del Puente de Gmail...');
     
-    console.log('Respuesta de Resend:', data);
-    return data;
+    const response = await fetch(bridgeUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        to: to,
+        subject: subject,
+        html: html
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // Redirect follow es necesario para Apps Script
+      redirect: 'follow'
+    });
+
+    const result = await response.text();
+    console.log('Resultado del Puente de Gmail:', result);
+    return result;
   } catch (error) {
-    console.error('Error detallado de Resend API:', error);
+    console.error('Error en el Puente de Gmail:', error);
     throw error;
   }
 }
