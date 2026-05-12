@@ -16,24 +16,34 @@ class LinkRecuperacionScreen extends StatefulWidget {
 class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _tokenController = TextEditingController(); // Nuevo controlador para el token
   bool _ocultarPassword = true;
   bool _ocultarConfirm = true;
   bool _cargando = false;
 
   @override
+  void initState() {
+    super.initState();
+    // Si el token vino por constructor, lo ponemos en el controlador
+    _tokenController.text = widget.token;
+  }
+
+  @override
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _tokenController.dispose();
     super.dispose();
   }
 
   Future<void> _cambiarPassword() async {
     final newPassword = _passwordController.text.trim();
     final confirm = _confirmPasswordController.text.trim();
+    final token = _tokenController.text.trim();
 
     // Validaciones locales
-    if (newPassword.isEmpty || confirm.isEmpty) {
-      _mostrarError('Completa todos los campos');
+    if (newPassword.isEmpty || confirm.isEmpty || token.isEmpty) {
+      _mostrarError('Completa todos los campos, incluido el código');
       return;
     }
 
@@ -124,9 +134,9 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                 ),
                 const SizedBox(height: 48),
 
-                // ── Campo Correo electrónico (Imagen 1) ─────
+                // ── Campo Código de recuperación ──────────────────
                 Text(
-                  'Correo electrónico',
+                  'Código de recuperación',
                   style: GoogleFonts.outfit(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -137,9 +147,9 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                 SizedBox(
                   height: 48,
                   child: TextField(
-                    enabled: false, // El correo viene del token, no se edita
+                    controller: _tokenController,
                     decoration: InputDecoration(
-                      hintText: 'Cargando correo...',
+                      hintText: 'Pega el código aquí...',
                       filled: true,
                       fillColor: const Color(0xFFdb007f).withOpacity(0.50),
                       border: OutlineInputBorder(

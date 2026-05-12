@@ -194,9 +194,13 @@ function resetRedirect(req, res) {
       <body style="font-family:Arial;text-align:center;padding:50px;">
         <h2 style="color:#db007f">Redirigiendo a la App...</h2>
         <p>Si la App no se abre automáticamente, haz clic abajo:</p>
-        <a href="${deepLink}" style="display:inline-block;padding:15px 30px;background:#db007f;color:white;text-decoration:none;border-radius:10px;font-weight:bold;">
+        <a href="${deepLink}" style="display:inline-block;padding:15px 30px;background:#db007f;color:white;text-decoration:none;border-radius:10px;font-weight:bold;margin-bottom:20px;">
           ABRIR APP SIMÖ
         </a>
+        <div style="margin-top:30px; padding:20px; border:2px dashed #db007f; border-radius:10px; background:#fff;">
+          <p style="color:#555; font-size:14px; margin-bottom:10px;">Si el botón no funciona (en navegador), copia este código:</p>
+          <code style="display:block; word-break:break-all; background:#eee; padding:10px; border-radius:5px; font-size:12px;">${token}</code>
+        </div>
         <script>
           window.location.href = "${deepLink}";
         </script>
