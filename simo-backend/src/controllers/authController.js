@@ -8,9 +8,8 @@ const pool = require('../db/pool');
 // BREVO_SENDER_EMAIL
 
 // ─── Configuración de Brevo ──────────────────────────────
-const brevoClient = Brevo.ApiClient.instance;
-brevoClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
-const transactionalApi = new Brevo.TransactionalEmailsApi();
+const apiInstance = new Brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
 // ─── POST /api/auth/register ───────────────────────────
 async function register(req, res) {
@@ -131,7 +130,7 @@ async function recuperarPassword(req, res) {
 
     // Enviar el correo con Brevo
     try {
-      await transactionalApi.sendTransacEmail({
+      await apiInstance.sendTransacEmail({
         sender: { name: 'SIMÖ', email: process.env.BREVO_SENDER_EMAIL },
         to: [{ email: email }],
         subject: '🔑 Recupera tu contraseña en SIMÖ',
