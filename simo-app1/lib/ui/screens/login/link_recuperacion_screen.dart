@@ -113,7 +113,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  '¡ NUEVA\nCONTRASEÑA !',
+                  '¡ RECUPERA TU\nCONTRASEÑA !',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
                     fontSize: 45,
@@ -122,17 +122,34 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                     height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 48),
+
+                // ── Campo Correo electrónico (Imagen 1) ─────
                 Text(
-                  'Ingresa y confirma tu nueva\ncontraseña para recuperar el acceso.',
-                  textAlign: TextAlign.center,
+                  'Correo electrónico',
                   style: GoogleFonts.outfit(
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: const Color(0xFFdb007f),
                   ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 48,
+                  child: TextField(
+                    enabled: false, // El correo viene del token, no se edita
+                    decoration: InputDecoration(
+                      hintText: 'Cargando correo...',
+                      filled: true,
+                      fillColor: const Color(0xFFdb007f).withOpacity(0.50),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
 
                 // ── Campo Contraseña nueva ──────────────────
                 Text(
@@ -208,7 +225,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                 ),
                 const SizedBox(height: 48),
 
-                // ── Botón Cambiar contraseña ─────────────────
+                // ── Botón ENVIAR ENLACE (Como en Imagen 1) ───
                 Center(
                   child: SizedBox(
                     width: 240,
@@ -226,7 +243,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                       child: _cargando
                           ? const CircularProgressIndicator(color: Colors.white)
                           : Text(
-                              'CAMBIAR CONTRASEÑA',
+                              'ENVIAR ENLACE',
                               style: GoogleFonts.outfit(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

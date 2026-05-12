@@ -184,8 +184,25 @@ function resetRedirect(req, res) {
   }
 
   // Redirigir al deep link de la app Flutter
+  // El esquema simo:// funciona en Android/iOS. 
   const deepLink = `simo://reset-password?token=${token}`;
-  res.redirect(deepLink);
+  
+  // Enviamos una pequeña página que intenta abrir la app automáticamente
+  res.send(`
+    <html>
+      <head><title>Redirigiendo a SIMÖ...</title></head>
+      <body style="font-family:Arial;text-align:center;padding:50px;">
+        <h2 style="color:#db007f">Redirigiendo a la App...</h2>
+        <p>Si la App no se abre automáticamente, haz clic abajo:</p>
+        <a href="${deepLink}" style="display:inline-block;padding:15px 30px;background:#db007f;color:white;text-decoration:none;border-radius:10px;font-weight:bold;">
+          ABRIR APP SIMÖ
+        </a>
+        <script>
+          window.location.href = "${deepLink}";
+        </script>
+      </body>
+    </html>
+  `);
 }
 
 // ─── POST /api/auth/reset-password ────────────────────
