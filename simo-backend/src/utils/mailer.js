@@ -1,27 +1,31 @@
-const { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } = require('@getbrevo/brevo');
+const nodemailer = require('nodemailer');
+
+// Configuración de Gmail con Nodemailer
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS, // La contraseña de aplicación de 16 letras
+  },
+});
 
 /**
- * Envía un correo electrónico usando Brevo (v5)
+ * Envía un correo electrónico usando Gmail
  */
 async function enviarCorreo(to, subject, html) {
-  const apiInstance = new TransactionalEmailsApi();
-  
-  // Configuración de la API Key
-  apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
-
-  const sendSmtpEmail = new SendSmtpEmail();
-
-  sendSmtpEmail.subject = subject;
-  sendSmtpEmail.htmlContent = html;
-  sendSmtpEmail.sender = { name: "SIMÖ", email: "simoappoficina@gmail.com" };
-  sendSmtpEmail.to = [{ email: to }];
+  const mailOptions = {
+    from: `"SIMÖ" <${process.env.GMAIL_USER}>`,
+    to: to,
+    subject: subject,
+    html: html,
+  };
 
   try {
-    const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('Correo enviado correctamente (Brevo):', data.body.messageId);
-    return data;
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Correo enviado correctamente (Gmail):', info.messageId);
+    return info;
   } catch (error) {
-    console.error('Error detallado de Brevo:', error.response ? error.response.body : error);
+    console.error('Error detallado de Gmail:', error);
     throw error;
   }
 }
