@@ -119,6 +119,16 @@ class NotificacionCard extends StatelessWidget {
     }
   }
 
+  String _formatDate(String isoString) {
+    try {
+      final dt = DateTime.parse(isoString);
+      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    } catch (_) {
+      if (isoString.contains('T')) return isoString.split('T')[0];
+      return isoString;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isBateria = notificacion.tipoDispositivo == TipoDispositivo.bateria;
@@ -206,8 +216,10 @@ class NotificacionCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Text(
-                      'Fecha:${notificacion.fecha}',
+                      'Fecha: ${_formatDate(notificacion.fecha)}',
                       style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: _textoDark.withValues(alpha: 0.8)),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],

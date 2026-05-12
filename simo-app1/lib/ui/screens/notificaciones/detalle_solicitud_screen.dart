@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../domain/entities/detalle_solicitud_entity.dart';
 import '../../../domain/entities/notificacion_entity.dart';
 import '../../providers/detalle_solicitud_notifier.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide ChangeNotifierProvider, Consumer;
+import '../../providers/auth_notifier.dart';
 
 // ─── Colores SIMÖ ─────────────────────────────────────────────────────────────
 const _magenta = Color(0xFFD8006B);
@@ -15,15 +17,15 @@ const _textoDark = Color(0xFF1E272E);
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
-class DetalleSolicitudScreen extends StatefulWidget {
+class DetalleSolicitudScreen extends ConsumerStatefulWidget {
   final String solicitudId;
   const DetalleSolicitudScreen({super.key, required this.solicitudId});
 
   @override
-  State<DetalleSolicitudScreen> createState() => _DetalleSolicitudScreenState();
+  ConsumerState<DetalleSolicitudScreen> createState() => _DetalleSolicitudScreenState();
 }
 
-class _DetalleSolicitudScreenState extends State<DetalleSolicitudScreen> {
+class _DetalleSolicitudScreenState extends ConsumerState<DetalleSolicitudScreen> {
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,8 @@ class _DetalleSolicitudScreenState extends State<DetalleSolicitudScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final puntosUsuario = ref.watch(authProvider).usuario?.puntosVerdes ?? 0;
+    
     return Consumer<DetalleSolicitudNotifier>(
       builder: (context, notifier, _) {
         final state = notifier.state;
@@ -41,7 +45,7 @@ class _DetalleSolicitudScreenState extends State<DetalleSolicitudScreen> {
           backgroundColor: _azul, // 100% blue background matching design
           body: Column(
             children: [
-              _TopBar(puntosUsuario: 1780), // En un app real vendría del auth_notifier
+              _TopBar(puntosUsuario: puntosUsuario),
               Expanded(
                 child: state.isLoading
                     ? const _LoadingView()
@@ -189,19 +193,15 @@ class _SeccionPrincipal extends StatelessWidget {
         const SizedBox(height: 20),
         Row(
           children: [
-            // Badge con los puntos (forzamos que ocupe el mismo ancho que _IconoDispositivo para alinear perfectamente la columna izquierda)
-            SizedBox(
-              width: 152,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: _BadgePuntosSolicitud(puntos: detalle.puntos),
-              ),
+            Expanded(
+              child: _BadgePuntosSolicitud(puntos: detalle.puntos),
             ),
-            const SizedBox(width: 20),
-            // Botón "Completo" (alineado debajo de la info de destino)
-            _BotonCompleto(
-              isSubmitting: state.isSubmitting,
-              onTap: notifier.marcarCompleto,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _BotonCompleto(
+                isSubmitting: state.isSubmitting,
+                onTap: notifier.marcarCompleto,
+              ),
             ),
           ],
         ),
@@ -377,8 +377,7 @@ class _BadgePuntosSolicitud extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 152,
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFCE7),
         borderRadius: BorderRadius.circular(16),
@@ -414,26 +413,16 @@ class _BotonCompleto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: isSubmitting ? null : onTap,
-      child: Container(
-        width: 160,
-        height: 69,
-        decoration: BoxDecoration(
-          color: _amarillo,
-          borderRadius: BorderRadius.circular(6.67),
-        ),
-        alignment: Alignment.center,
-        child: isSubmitting
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(color: _textoDark, strokeWidth: 3),
-              )
-            : Text(
-                'Completo',
-                style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: _textoDark),
-              ),
+    return Container(
+      height: 69,
+      decoration: BoxDecoration(
+        color: const Color(0xFFB0B0B0),
+        borderRadius: BorderRadius.circular(6.67),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        'Completo',
+        style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
@@ -451,6 +440,16 @@ class _SeccionConfirmacion extends StatelessWidget {
     required this.expanded,
     required this.onToggle,
   });
+
+  String _formatDate(String isoString) {
+    try {
+      final dt = DateTime.parse(isoString);
+      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    } catch (_) {
+      if (isoString.contains('T')) return isoString.split('T')[0];
+      return isoString;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -474,9 +473,12 @@ class _SeccionConfirmacion extends StatelessWidget {
                     size: 28,
                   ),
                   const Spacer(),
-                  Text(
-                    '${detalle.fecha} - NIT:${detalle.nit}',
-                    style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, color: _textoDark),
+                  Flexible(
+                    child: Text(
+                      '${_formatDate(detalle.fecha)} - NIT: ${detalle.nit}',
+                      style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, color: _textoDark),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -533,10 +535,12 @@ class _ConfirmacionDetalle extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           // Filas de detalle
-          _FilaDetalle(label: 'Dispositivo:', value: _labelTipo(detalle.tipoDispositivo), valueColor: _azul),
+          _FilaDetalle(label: 'Dispositivo:', value: _labelTipo(detalle.tipoDispositivo, detalle.electrodomestico), valueColor: _azul),
           const SizedBox(height: 8),
           _FilaDetalle(
-            label: 'Fecha limite de entrega:',
+            label: detalle.metodoEntrega == MetodoEntrega.loLlevasTu 
+                ? 'Fecha limite de entrega:' 
+                : 'Fecha limite de recogida:',
             value: detalle.fechaLimiteEntrega,
             valueColor: _azul,
           ),
@@ -567,7 +571,7 @@ class _ConfirmacionDetalle extends StatelessWidget {
     );
   }
 
-  String _labelTipo(TipoDispositivo t) {
+  String _labelTipo(TipoDispositivo t, String electrodomestico) {
     switch (t) {
       case TipoDispositivo.bateria:
         return 'Bateria';
@@ -578,7 +582,7 @@ class _ConfirmacionDetalle extends StatelessWidget {
       case TipoDispositivo.laptop:
         return 'Laptop';
       default:
-        return 'Dispositivo';
+        return electrodomestico;
     }
   }
 }

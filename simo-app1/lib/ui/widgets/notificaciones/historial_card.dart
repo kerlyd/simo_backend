@@ -81,22 +81,20 @@ class HistorialCard extends StatelessWidget {
   }
 
   String get _estadoLabel {
-    switch (item.estado) {
-      case EstadoSolicitud.completo:
-        return 'Completado';
-      case EstadoSolicitud.enProceso:
-        return 'en proceso';
-      case EstadoSolicitud.cancelado:
-        return 'Cancelado';
-    }
+    return 'Completo';
   }
 
   Color get _estadoColor {
-    switch (item.estado) {
-      case EstadoSolicitud.completo:
-        return _azul;
-      default:
-        return _textoDark;
+    return _azul;
+  }
+
+  String _formatDate(String isoString) {
+    try {
+      final dt = DateTime.parse(isoString);
+      return '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    } catch (_) {
+      if (isoString.contains('T')) return isoString.split('T')[0];
+      return isoString;
     }
   }
 
@@ -179,18 +177,24 @@ class HistorialCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Destino:${item.destino}',
+                          'Destino: ${item.destino}',
                           style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w600, color: _textoDark),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 2),
                         Text(
                           'Electrodomestico: ${item.electrodomestico}',
                           style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: _textoDark.withValues(alpha: 0.85)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Fecha:${item.fecha}',
+                          'Fecha: ${_formatDate(item.fecha)}',
                           style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.bold, color: _textoDark.withValues(alpha: 0.85)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

@@ -22,27 +22,49 @@ class DetalleSolicitudModel extends DetalleSolicitudEntity {
   });
 
   factory DetalleSolicitudModel.fromJson(Map<String, dynamic> json) {
-    return DetalleSolicitudModel(
-      id: json['id'].toString(),
-      cantidad: json['cantidad'] ?? 1,
-      tipoDispositivo: _parseTipo(json['dispositivo_nombre']),
-      destino: json['punto_nombre'] ?? 'Destino',
-      direccionDestino: json['punto_direccion'] ?? 'Dirección',
-      electrodomestico: json['dispositivo_nombre'] ?? 'Dispositivo',
-      fecha: json['fecha_solicitud'] ?? json['fecha'] ?? '',
-      puntos: json['puntos'] ?? 0,
-      puntosGanados: json['estado'] == 'completo' ? (json['puntos'] ?? 0) : 0,
-      estado: EstadoSolicitud.values.firstWhere((e) => e.name == json['estado'],
-          orElse: () => EstadoSolicitud.enProceso),
-      metodoEntrega: json['metodo_entrega'] == 'lo_llevas_tu'
+      String metodoString = (json['metodo_entrega'] ?? '').toString().toLowerCase();
+      MetodoEntrega metodoEntrega = metodoString.contains('lleva')
           ? MetodoEntrega.loLlevasTu
-          : MetodoEntrega.loRecogemosNosotros,
-      nit: json['nit'] ?? '0129219',
-      codigo: json['id'].toString().padLeft(4, '0'),
-      fechaLimiteEntrega: 'A discreción',
-      nota: 'Los puntos se otorgan por completar la solicitud.',
-    );
-  }
+          : MetodoEntrega.loRecogemosNosotros;
+
+      String fechaS = json['fecha_solicitud'] ?? json['fecha'] ?? '';
+      String fechaLimite = '5 días hábiles';
+
+      if (metodoEntrega == MetodoEntrega.loLlevasTu) {
+        try {
+          DateTime dt = DateTime.parse(fechaS);
+          int added = 0;
+          while (added < 2) {
+            dt = dt.add(const Duration(days: 1));
+            if (dt.weekday != DateTime.saturday && dt.weekday != DateTime.sunday) {
+              added++;
+            }
+          }
+          fechaLimite = '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+        } catch (_) {
+          fechaLimite = '2 días hábiles';
+        }
+      }
+
+      return DetalleSolicitudModel(
+        id: json['id'].toString(),
+        cantidad: json['cantidad'] ?? 1,
+        tipoDispositivo: _parseTipo(json['dispositivo_nombre']),
+        destino: json['punto_nombre'] ?? 'Destino',
+        direccionDestino: json['punto_direccion'] ?? 'Dirección',
+        electrodomestico: json['dispositivo_nombre'] ?? 'Dispositivo',
+        fecha: fechaS,
+        puntos: json['puntos'] ?? 0,
+        puntosGanados: json['puntos'] ?? 0,
+        estado: EstadoSolicitud.values.firstWhere((e) => e.name == json['estado'],
+            orElse: () => EstadoSolicitud.enProceso),
+        metodoEntrega: metodoEntrega,
+        nit: json['nit'] ?? '0129219',
+        codigo: json['id'].toString().padLeft(4, '0'),
+        fechaLimiteEntrega: fechaLimite,
+        nota: 'Los puntos se otorgan por completar la solicitud.',
+      );
+    }
 
   Map<String, dynamic> toJson() => {
         'id': id,
