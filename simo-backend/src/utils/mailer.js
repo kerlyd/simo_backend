@@ -1,15 +1,15 @@
-const SibApiV3Sdk = require('@getbrevo/brevo');
+const { TransactionalEmailsApi, SendSmtpEmail, TransactionalEmailsApiApiKeys } = require('@getbrevo/brevo');
 
 /**
- * Envía un correo electrónico usando Brevo
+ * Envía un correo electrónico usando Brevo (v5)
  */
 async function enviarCorreo(to, subject, html) {
-  let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
+  const apiInstance = new TransactionalEmailsApi();
+  
   // Configuración de la API Key
-  apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
+  apiInstance.setApiKey(TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
-  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+  const sendSmtpEmail = new SendSmtpEmail();
 
   sendSmtpEmail.subject = subject;
   sendSmtpEmail.htmlContent = html;
@@ -18,10 +18,9 @@ async function enviarCorreo(to, subject, html) {
 
   try {
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('Correo enviado correctamente (Brevo):', data.response.statusCode);
+    console.log('Correo enviado correctamente (Brevo):', data.body.messageId);
     return data;
   } catch (error) {
-    // Esto nos dará más detalle en los logs de Railway
     console.error('Error detallado de Brevo:', error.response ? error.response.body : error);
     throw error;
   }

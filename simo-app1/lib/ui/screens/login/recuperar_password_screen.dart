@@ -44,7 +44,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
 
     try {
       final dio = Dio(BaseOptions(
-        baseUrl: 'http://192.168.1.4:3000',
+        baseUrl: 'https://simobackend-production.up.railway.app',
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
       ));
