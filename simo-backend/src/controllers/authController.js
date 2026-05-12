@@ -1,14 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { BrevoClient } = require('@getbrevo/brevo');
 const pool = require('../db/pool');
+const { enviarCorreo } = require('../utils/mailer');
 
-// Variables de entorno necesarias:
-// BREVO_API_KEY
-// BREVO_SENDER_EMAIL
-
-// ─── Configuración de Brevo ──────────────────────────────
-const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
+// ─── Configuración de Correo (Gmail) ────────────────────────
+// Se maneja a través de src/utils/mailer.js
 
 // ─── POST /api/auth/register ───────────────────────────
 async function register(req, res) {
@@ -127,13 +123,12 @@ async function recuperarPassword(req, res) {
     const BASE_URL = process.env.BASE_URL || `http://192.168.1.4:${process.env.PORT || 3000}`;
     const enlace = `${BASE_URL}/api/auth/reset-redirect?token=${resetToken}`;
 
-    // Enviar el correo con Brevo
+    // Enviar el correo con Gmail (Nodemailer)
     try {
-      await brevo.transactionalEmails.sendTransacEmail({
-        sender: { name: 'SIMÖ', email: process.env.BREVO_SENDER_EMAIL },
-        to: [{ email: email }],
-        subject: '🔑 Recupera tu contraseña en SIMÖ',
-        htmlContent: `
+      await enviarCorreo(
+        email,
+        '🔑 Recupera tu contraseña en SIMÖ',
+        `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; background: #f7f4ec; border-radius: 12px;">
           <h1 style="color: #db007f; text-align: center; font-size: 28px; margin-bottom: 8px;">SIMÖ</h1>
           <h2 style="color: #333; text-align: center; font-size: 20px;">Recupera tu contraseña</h2>
@@ -147,8 +142,8 @@ async function recuperarPassword(req, res) {
           <p style="color: #888; font-size: 13px; text-align: center;">Este enlace expira en <strong>15 minutos</strong>.</p>
           <p style="color: #888; font-size: 13px; text-align: center;">Si no solicitaste esto, puedes ignorar este correo.</p>
         </div>
-      `,
-      });
+      `
+      );
     } catch (mailError) {
       console.error('Error enviando el correo:', mailError);
       throw mailError;
