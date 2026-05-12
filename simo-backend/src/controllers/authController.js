@@ -93,6 +93,7 @@ async function login(req, res) {
 // Verifica que el email exista, genera un token de reset y envía el correo
 async function recuperarPassword(req, res) {
   const { email } = req.body;
+  console.log('📩 Petición de recuperación recibida para:', email);
 
   if (!email) {
     return res.status(400).json({ error: 'El correo electrónico es obligatorio' });
