@@ -119,60 +119,26 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
         ),
         const SizedBox(height: 48),
         Center(
-          child: Column(
-            children: [
-              SizedBox(
-                width: 240,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Abrir la pantalla de reinicio sin token para poder pegarlo
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const LinkRecuperacionScreen(token: ''),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFdb007f),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    'YA TENGO EL CÓDIGO',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+          child: SizedBox(
+            width: 240,
+            child: OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFFdb007f),
+                side: const BorderSide(color: Color(0xFFdb007f), width: 2),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: 240,
-                child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFdb007f),
-                    side: const BorderSide(color: Color(0xFFdb007f), width: 2),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    'VOLVER AL LOGIN',
-                    style: GoogleFonts.outfit(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+              child: Text(
+                'VOLVER AL LOGIN',
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ],

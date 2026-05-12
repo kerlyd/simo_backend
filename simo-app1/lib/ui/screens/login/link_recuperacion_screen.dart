@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'login_screen.dart';
 
 class LinkRecuperacionScreen extends StatefulWidget {
-  /// Token JWT recibido desde el deep link del correo
   final String token;
-
   const LinkRecuperacionScreen({super.key, required this.token});
 
   @override
@@ -16,7 +15,7 @@ class LinkRecuperacionScreen extends StatefulWidget {
 class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _tokenController = TextEditingController(); // Nuevo controlador para el token
+  String _emailUsuario = '';
   bool _ocultarPassword = true;
   bool _ocultarConfirm = true;
   bool _cargando = false;
@@ -24,26 +23,39 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
   @override
   void initState() {
     super.initState();
-    // Si el token vino por constructor, lo ponemos en el controlador
-    _tokenController.text = widget.token;
+    _extraerEmail();
+  }
+
+  void _extraerEmail() {
+    try {
+      final parts = widget.token.split('.');
+      if (parts.length == 3) {
+        final payload = parts[1];
+        String normalized = base64.normalize(payload);
+        String resp = utf8.decode(base64.decode(normalized));
+        final Map<String, dynamic> data = json.decode(resp);
+        setState(() {
+          _emailUsuario = data['email'] ?? '';
+        });
+      }
+    } catch (e) {
+      debugPrint('Error al decodificar email: $e');
+    }
   }
 
   @override
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _tokenController.dispose();
     super.dispose();
   }
 
   Future<void> _cambiarPassword() async {
     final newPassword = _passwordController.text.trim();
     final confirm = _confirmPasswordController.text.trim();
-    final token = _tokenController.text.trim();
 
-    // Validaciones locales
-    if (newPassword.isEmpty || confirm.isEmpty || token.isEmpty) {
-      _mostrarError('Completa todos los campos, incluido el código');
+    if (newPassword.isEmpty || confirm.isEmpty) {
+      _mostrarError('Completa todos los campos');
       return;
     }
 
@@ -72,19 +84,12 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
       });
 
       if (mounted) {
-        // Mostrar mensaje de éxito y navegar al login
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              '✅ Contraseña actualizada. ¡Ya puedes iniciar sesión!',
-              style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
-            ),
+            content: Text('✅ Contraseña actualizada correctamente', style: GoogleFonts.outfit()),
             backgroundColor: Colors.green.shade700,
-            duration: const Duration(seconds: 3),
           ),
         );
-
-        // Limpia el stack y va al Login
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -94,19 +99,14 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
     } on DioException catch (e) {
       if (mounted) {
         setState(() => _cargando = false);
-        final msg = e.response?.data?['error'] ??
-            'Error al cambiar la contraseña. Intenta de nuevo.';
-        _mostrarError(msg);
+        _mostrarError(e.response?.data?['error'] ?? 'Error al actualizar');
       }
     }
   }
 
   void _mostrarError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.red.shade700,
-      ),
+      SnackBar(content: Text(msg, style: GoogleFonts.outfit()), backgroundColor: Colors.red.shade700),
     );
   }
 
@@ -133,109 +133,58 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                   ),
                 ),
                 const SizedBox(height: 48),
-
-                // ── Campo Código de recuperación ──────────────────
-                Text(
-                  'Código de recuperación',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFFdb007f),
+                
+                // Campo Email (Solo lectura)
+                Text('Correo electrónico', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
+                const SizedBox(height: 8),
+                TextField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                    hintText: _emailUsuario.isEmpty ? 'Cargando correo...' : _emailUsuario,
+                    filled: true,
+                    fillColor: const Color(0xFFdb007f).withOpacity(0.50),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                   ),
                 ),
+                const SizedBox(height: 16),
+
+                // Campo Nueva Clave
+                Text('Contraseña nueva', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
                 const SizedBox(height: 8),
-                SizedBox(
-                  height: 48,
-                  child: TextField(
-                    controller: _tokenController,
-                    decoration: InputDecoration(
-                      hintText: 'Pega el código aquí...',
-                      filled: true,
-                      fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: _ocultarPassword,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFdb007f).withOpacity(0.50),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    suffixIcon: IconButton(
+                      icon: Icon(_ocultarPassword ? Icons.visibility_off : Icons.visibility, color: Colors.white),
+                      onPressed: () => setState(() => _ocultarPassword = !_ocultarPassword),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // ── Campo Contraseña nueva ──────────────────
-                Text(
-                  'Contraseña nueva',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFFdb007f),
-                  ),
-                ),
+                // Campo Confirmar
+                Text('Confirmar contraseña', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
                 const SizedBox(height: 8),
-                SizedBox(
-                  height: 48,
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: _ocultarPassword,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _ocultarPassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.white,
-                        ),
-                        onPressed: () =>
-                            setState(() => _ocultarPassword = !_ocultarPassword),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // ── Campo Confirmar Contraseña ───────────────
-                Text(
-                  'Confirmar contraseña',
-                  style: GoogleFonts.outfit(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFFdb007f),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 48,
-                  child: TextField(
-                    controller: _confirmPasswordController,
-                    obscureText: _ocultarConfirm,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _ocultarConfirm
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.white,
-                        ),
-                        onPressed: () =>
-                            setState(() => _ocultarConfirm = !_ocultarConfirm),
-                      ),
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: _ocultarConfirm,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFdb007f).withOpacity(0.50),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    suffixIcon: IconButton(
+                      icon: Icon(_ocultarConfirm ? Icons.visibility_off : Icons.visibility, color: Colors.white),
+                      onPressed: () => setState(() => _ocultarConfirm = !_ocultarConfirm),
                     ),
                   ),
                 ),
                 const SizedBox(height: 48),
 
-                // ── Botón ENVIAR ENLACE (Como en Imagen 1) ───
+                // Botón Final
                 Center(
                   child: SizedBox(
                     width: 240,
@@ -244,21 +193,10 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFdb007f),
                         foregroundColor: Colors.white,
-                        elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 25),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
-                      child: _cargando
-                          ? const CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'ENVIAR ENLACE',
-                              style: GoogleFonts.outfit(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                      child: _cargando ? const CircularProgressIndicator(color: Colors.white) : Text('ENVIAR ENLACE', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
