@@ -35,7 +35,7 @@ async function register(req, res) {
       `INSERT INTO usuario (nombre, email, password, cedula, telefono, direccion, rol)
        VALUES ($1, $2, $3, $4, $5, $6, 'reciclador')
        RETURNING id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, created_at`,
-      [nombre, hash, cedula, telefono || null, direccion || null]
+      [nombre, email, hash, cedula, telefono || null, direccion || null]
     );
 
     const usuario = resultado.rows[0];

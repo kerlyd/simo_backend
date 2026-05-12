@@ -5,7 +5,9 @@ import '../../widgets/widgetsopciones/simo_header.dart';
 import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 import '../../providers/auth_notifier.dart';
 import '../../../data/models/dispositivo_model.dart';
+import '../../../data/models/punto_reciclaje_model.dart';
 import '../../../data/datasources/dispositivo_remote_datasource.dart';
+import '../../../data/datasources/punto_reciclaje_remote_datasource.dart';
 import '../../../injection_container.dart';
 import 'detalle_solicitud_screen.dart';
 import 'opciones_screen.dart';
@@ -26,6 +28,7 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
 
   List<DispositivoModel> _allDispositivos = [];
   List<DispositivoModel> _filteredDispositivos = [];
+  List<PuntoReciclajeModel> _apiPuntos = [];
   bool _loading = true;
 
   @override
@@ -37,20 +40,26 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
 
   Future<void> _fetchDispositivos() async {
     try {
-      final data = await sl<DispositivoRemoteDataSource>().getTiposDispositivo();
+      final dispositivoDS = sl<DispositivoRemoteDataSource>();
+      final puntoDS = sl<PuntoReciclajeRemoteDataSource>();
+
+      final results = await Future.wait([
+        dispositivoDS.getTiposDispositivo(),
+        puntoDS.getPuntosReciclaje(),
+      ]);
+
       if (mounted) {
         setState(() {
-          _allDispositivos = data;
-          _filteredDispositivos = data;
+          _allDispositivos = results[0] as List<DispositivoModel>;
+          _filteredDispositivos = _allDispositivos;
+          _apiPuntos = results[1] as List<PuntoReciclajeModel>;
           _loading = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() => _loading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar dispositivos: $e')),
-        );
+        debugPrint('Error fetching data in BusquedaScreen: $e');
       }
     }
   }
@@ -202,21 +211,30 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
-          _buildDestinoCard(
-            aliado: 'EcoTech',
-            direccion: 'Calle 50 #45-23, Medellín',
-            metodo: 'Lo llevas tú',
-            puntos: selectedPuntos ?? 0,
-            colorBoton: const Color(0xFFD3CFCF),
-          ),
-          const SizedBox(height: 8),
-          _buildDestinoCard(
-            aliado: 'Monterray',
-            direccion: 'Carrera 48 # 10-45',
-            metodo: 'Lo recogemos',
-            puntos: selectedPuntos ?? 0,
-            colorBoton: AppColors.simoAmarillo,
-          ),
+          if (_apiPuntos.isEmpty)
+            const Text(
+              'No hay puntos de reciclaje disponibles',
+              style: TextStyle(color: Colors.white70, fontSize: 12),
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: _apiPuntos.length,
+              itemBuilder: (context, index) {
+                final punto = _apiPuntos[index];
+                final isEven = index % 2 == 0;
+                return _buildDestinoCard(
+                  id: punto.id,
+                  aliado: punto.nombre,
+                  direccion: punto.direccion,
+                  metodo: isEven ? 'Lo llevas tú' : 'Lo recogemos',
+                  puntos: selectedPuntos ?? 0,
+                  colorBoton: isEven ? const Color(0xFFD3CFCF) : AppColors.simoAmarillo,
+                );
+              },
+            ),
           const SizedBox(height: 8),
           TextButton(
             onPressed: () {
@@ -404,6 +422,7 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
   }
 
   Widget _buildDestinoCard({
+    required dynamic id,
     required String aliado,
     required String direccion,
     required String metodo,
@@ -425,6 +444,7 @@ class _BusquedaScreenState extends ConsumerState<BusquedaScreen> {
                 destinoDireccion: direccion,
                 metodoEntrega: metodo,
                 puntos: selectedPuntos ?? puntos,
+                puntoId: id,
               ),
             ),
           );

@@ -19,6 +19,7 @@ class ConfirmarSolicitudScreen extends ConsumerStatefulWidget {
   final String metodoEntrega;
   final int puntos;
   final dynamic dispositivoId;
+  final dynamic puntoId;
 
   const ConfirmarSolicitudScreen({
     super.key,
@@ -29,6 +30,7 @@ class ConfirmarSolicitudScreen extends ConsumerStatefulWidget {
     required this.metodoEntrega,
     required this.puntos,
     required this.dispositivoId,
+    required this.puntoId,
   });
 
   @override
@@ -44,14 +46,10 @@ class _ConfirmarSolicitudScreenState
     setState(() => _isSubmitting = true);
     try {
       final dio = sl<Dio>();
-      // Mapeo simple de aliados a IDs (en producción esto vendría de la API)
-      final puntoId = widget.destinoAliado.contains('EcoTech')
-          ? '9354c9aa-761c-430c-b1cc-faba30807afa'
-          : '0ab74597-a2fb-4a69-bc51-62961d6b50d3';
 
       final response = await dio.post('/api/solicitudes', data: {
         'dispositivo_tipo_id': widget.dispositivoId,
-        'punto_reciclaje_id': puntoId,
+        'punto_reciclaje_id': widget.puntoId,
         'metodo_entrega': widget.metodoEntrega,
       });
 
@@ -76,9 +74,23 @@ class _ConfirmarSolicitudScreenState
         }
       }
     } catch (e) {
+      String errorMsg = e.toString();
+      if (e is DioException && e.response != null) {
+        errorMsg = e.response?.data['error'] ?? 
+                   e.response?.data['message'] ?? 
+                   e.response?.statusMessage ?? 
+                   e.message;
+      }
+
+      debugPrint('❌ Error en la solicitud: $errorMsg');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al procesar solicitud: $e')),
+          SnackBar(
+            content: Text('Error al procesar solicitud: $errorMsg'),
+            backgroundColor: Colors.redAccent,
+            duration: const Duration(seconds: 5),
+          ),
         );
       }
     } finally {

@@ -8,6 +8,10 @@ import '../../providers/auth_notifier.dart';
 import 'busqueda_screen.dart';
 import 'detalle_solicitud_screen.dart';
 import '../../../data/models/dispositivo_model.dart';
+import '../../../data/models/punto_reciclaje_model.dart';
+import '../../../data/datasources/dispositivo_remote_datasource.dart';
+import '../../../data/datasources/punto_reciclaje_remote_datasource.dart';
+import '../../../injection_container.dart';
 
 class OpcionesScreen extends ConsumerStatefulWidget {
   const OpcionesScreen({super.key});
@@ -25,6 +29,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
   late AnimationController _controller;
 
   List<DispositivoModel> _apiDispositivos = [];
+  List<PuntoReciclajeModel> _apiPuntos = [];
   bool _loading = true;
 
   final Map<String, String> iconMapping = {
@@ -96,21 +101,21 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
 
   Future<void> _fetchDispositivos() async {
     try {
-      // Lista personalizada según requerimiento del usuario y referencia
-      final customDispositivos = [
-        DispositivoModel(id: 1, nombre: 'Celular', puntos: 800),
-        DispositivoModel(id: 2, nombre: 'Bateria', puntos: 800),
-        DispositivoModel(id: 3, nombre: 'Pantallas o TV', puntos: 800),
-        DispositivoModel(id: 4, nombre: 'Refrigerador', puntos: 800),
-        DispositivoModel(id: 5, nombre: 'Cables', puntos: 800),
-        DispositivoModel(id: 6, nombre: 'Licuadora', puntos: 800),
-      ];
+      final dispositivoDS = sl<DispositivoRemoteDataSource>();
+      final puntoDS = sl<PuntoReciclajeRemoteDataSource>();
+
+      final results = await Future.wait([
+        dispositivoDS.getTiposDispositivo(),
+        puntoDS.getPuntosReciclaje(),
+      ]);
 
       setState(() {
-        _apiDispositivos = customDispositivos;
+        _apiDispositivos = results[0] as List<DispositivoModel>;
+        _apiPuntos = results[1] as List<PuntoReciclajeModel>;
         _loading = false;
       });
     } catch (e) {
+      debugPrint('Error fetching data: $e');
       setState(() => _loading = false);
     }
   }
@@ -300,33 +305,39 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
   }
 
   Widget _buildDestinationsList() {
-    return ListView(
+    if (_apiPuntos.isEmpty) {
+      return const Center(
+        child: Text(
+          'No hay puntos de reciclaje disponibles',
+          style: TextStyle(color: Colors.white, fontSize: 14),
+        ),
+      );
+    }
+
+    return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
-      children: [
-        _buildDestinationItem(
-          aliado: 'EcoTech',
-          direccion: 'Calle 50 #45-23, Medellín',
-          metodo: 'Lo llevas tú',
+      itemCount: _apiPuntos.length,
+      itemBuilder: (context, index) {
+        final punto = _apiPuntos[index];
+        // Alternamos colores y métodos para simular variedad (esto podría venir de la DB)
+        final isEven = index % 2 == 0;
+        return _buildDestinationItem(
+          id: punto.id,
+          aliado: punto.nombre,
+          direccion: punto.direccion,
+          metodo: isEven ? 'Lo llevas tú' : 'Lo recogemos',
           puntos: selectedPuntos ?? 0,
-          colorBoton: const Color(0xFFD3CFCF),
+          colorBoton: isEven ? const Color(0xFFD3CFCF) : AppColors.simoAmarillo,
           textColorBoton: const Color(0xFF424242),
-        ),
-        const SizedBox(height: 8),
-        _buildDestinationItem(
-          aliado: 'Monterray',
-          direccion: 'Carrera 48 # 10-45',
-          metodo: 'Lo recogemos',
-          puntos: selectedPuntos ?? 0,
-          colorBoton: AppColors.simoAmarillo,
-          textColorBoton: const Color(0xFF424242),
-        ),
-      ],
+        );
+      },
     );
   }
 
   Widget _buildDestinationItem({
+    required dynamic id,
     required String aliado,
     required String direccion,
     required String metodo,
@@ -337,7 +348,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => _navigateToConfirm(aliado, direccion, metodo),
+        onTap: () => _navigateToConfirm(id, aliado, direccion, metodo),
         child: Container(
           height: 108,
           margin: const EdgeInsets.only(bottom: 14),
@@ -489,7 +500,8 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
     );
   }
 
-  void _navigateToConfirm(String destino, String direccion, String metodo) {
+  void _navigateToConfirm(
+      dynamic puntoId, String destino, String direccion, String metodo) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -501,6 +513,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
           destinoDireccion: direccion,
           metodoEntrega: metodo,
           puntos: selectedPuntos ?? 0,
+          puntoId: puntoId,
         ),
       ),
     );

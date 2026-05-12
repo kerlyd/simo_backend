@@ -19,6 +19,7 @@ class DetalleSolicitudScreen extends ConsumerStatefulWidget {
   final String metodoEntrega;
   final int puntos;
   final dynamic dispositivoId;
+  final dynamic puntoId;
 
   const DetalleSolicitudScreen({
     super.key,
@@ -29,6 +30,7 @@ class DetalleSolicitudScreen extends ConsumerStatefulWidget {
     required this.destinoDireccion,
     required this.metodoEntrega,
     required this.puntos,
+    required this.puntoId,
   });
 
   @override
@@ -276,6 +278,7 @@ class _DetalleSolicitudScreenState extends ConsumerState<DetalleSolicitudScreen>
                           metodoEntrega: widget.metodoEntrega,
                           puntos: widget.puntos,
                           dispositivoId: widget.dispositivoId,
+                          puntoId: widget.puntoId,
                         ),
                       ),
                     );

@@ -8,6 +8,7 @@ import 'package:simo_app/domain/usecases/login_usecase.dart';
 import 'package:simo_app/domain/usecases/register_usecase.dart';
 import 'package:simo_app/data/datasources/dispositivo_remote_datasource.dart';
 import 'package:simo_app/data/datasources/recompensa_remote_datasource.dart';
+import 'package:simo_app/data/datasources/punto_reciclaje_remote_datasource.dart';
 
 final sl = GetIt.instance;
 
@@ -29,6 +30,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RecompensaRemoteDataSource>(
     () => RecompensaRemoteDataSourceImpl(sl()),
+  );
+
+  sl.registerLazySingleton<PuntoReciclajeRemoteDataSource>(
+    () => PuntoReciclajeRemoteDataSourceImpl(sl()),
   );
 
   final dio = Dio(BaseOptions(
