@@ -120,8 +120,8 @@ async function recuperarPassword(req, res) {
       { expiresIn: '15m' }
     );
 
-    // URL pública del backend (ajusta si tu servidor tiene otra IP/dominio)
-    const BASE_URL = process.env.BASE_URL || `http://192.168.1.4:${process.env.PORT || 3000}`;
+    // URL pública del backend
+    const BASE_URL = process.env.BASE_URL || 'https://simobackend-production.up.railway.app';
     const enlace = `${BASE_URL}/api/auth/reset-redirect?token=${resetToken}`;
 
     // Enviar el correo con Gmail (Nodemailer)
