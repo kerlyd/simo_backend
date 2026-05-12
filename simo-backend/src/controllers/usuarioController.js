@@ -4,7 +4,7 @@ const pool = require('../db/pool');
 async function getMe(req, res) {
   try {
     const resultado = await pool.query(
-      `SELECT id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, created_at
+      `SELECT id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, genero, created_at
        FROM usuario WHERE id = $1`,
       [req.usuario.id]
     );
@@ -22,17 +22,20 @@ async function getMe(req, res) {
 
 // ─── PUT /api/usuario/me ───────────────────────────────
 async function updateMe(req, res) {
-  const { nombre, telefono, direccion } = req.body;
+  const { nombre, telefono, direccion, genero, cedula, email } = req.body;
 
   try {
     const resultado = await pool.query(
       `UPDATE usuario
        SET nombre    = COALESCE($1, nombre),
            telefono  = COALESCE($2, telefono),
-           direccion = COALESCE($3, direccion)
-       WHERE id = $4
-       RETURNING id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol`,
-      [nombre, telefono, direccion, req.usuario.id]
+           direccion = COALESCE($3, direccion),
+           genero    = COALESCE($4, genero),
+           cedula    = COALESCE($5, cedula),
+           email     = COALESCE($6, email)
+       WHERE id = $7
+       RETURNING id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, genero`,
+      [nombre, telefono, direccion, genero, cedula, email, req.usuario.id]
     );
 
     res.json({ usuario: resultado.rows[0] });

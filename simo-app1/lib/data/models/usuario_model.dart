@@ -9,6 +9,7 @@ class UsuarioModel extends UsuarioEntity {
     required super.telefono,
     required super.direccion,
     required super.puntosVerdes,
+    required super.genero,
   });
 
   factory UsuarioModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +21,7 @@ class UsuarioModel extends UsuarioEntity {
       telefono: json['telefono'] ?? '',
       direccion: json['direccion'] ?? '',
       puntosVerdes: json['puntos_verdes'] ?? 0,
+      genero: json['genero'] ?? 'hombre',
     );
   }
 
@@ -31,5 +33,28 @@ class UsuarioModel extends UsuarioEntity {
     'telefono': telefono,
     'direccion': direccion,
     'puntosVerdes': puntosVerdes,
+    'genero': genero,
   };
+
+  UsuarioModel copyWith({
+    String? id,
+    String? nombre,
+    String? email,
+    String? cedula,
+    String? telefono,
+    String? direccion,
+    int? puntosVerdes,
+    String? genero,
+  }) {
+    return UsuarioModel(
+      id: id ?? this.id,
+      nombre: nombre ?? this.nombre,
+      email: email ?? this.email,
+      cedula: cedula ?? this.cedula,
+      telefono: telefono ?? this.telefono,
+      direccion: direccion ?? this.direccion,
+      puntosVerdes: puntosVerdes ?? this.puntosVerdes,
+      genero: genero ?? this.genero,
+    );
+  }
 }

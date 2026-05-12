@@ -1,6 +1,6 @@
 {
-    "name": "simo_app",
-    "short_name": "simo_app",
+    "name": "SIMÖ",
+    "short_name": "SIMÖ",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

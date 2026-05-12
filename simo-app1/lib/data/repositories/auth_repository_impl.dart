@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simo_app/data/datasources/auth_remote_datasource.dart';
-import 'package:simo_app/domain/entities/usuario_entity.dart';
-import 'package:simo_app/domain/failures/failures.dart';
-import 'package:simo_app/domain/repositories/auth_repository.dart';
+import '../datasources/auth_remote_datasource.dart';
+import '../models/usuario_model.dart';
+import '../../domain/entities/usuario_entity.dart';
+import '../../domain/failures/failures.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _dataSource;
@@ -66,6 +67,18 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
       return Left(ServerFailure(e.message ?? 'Error del servidor'));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UsuarioEntity>> updateUser(UsuarioEntity usuario) async {
+    try {
+      final result = await _dataSource.updateUser(usuario as UsuarioModel);
+      return Right(result);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.message ?? 'Error al actualizar usuario'));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

@@ -8,6 +8,7 @@ import '../../providers/auth_notifier.dart';
 import '../../../data/models/dispositivo_model.dart';
 import '../../../data/datasources/dispositivo_remote_datasource.dart';
 import '../../../injection_container.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -21,10 +22,59 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<DispositivoModel> _articulosActivos = [];
   bool _loadingArticulos = true;
 
+  // Lógica de Datos Curiosos
+  final List<String> _datosCuriosos = [
+    'Un celular reciclado correctamente puede recuperar materiales reutilizables como oro, cobre y aluminio.',
+    'Reciclar una tonelada de computadoras ahorra la misma energía que consume un hogar promedio en un año.',
+    'El 70% de las toxinas en los vertederos provienen de desechos electrónicos, aunque solo representan el 2% de la basura.',
+    'Una batería de laptop mal desechada puede contaminar hasta 60,000 litros de agua.',
+    'El vidrio de los monitores antiguos contiene plomo, que puede reutilizarse para nuevas pantallas.',
+    'Reciclar un solo monitor de televisión ahorra energía suficiente para ver la tele durante 30 horas.'
+  ];
+  int _currentDatoIndex = 0;
+  int _clicksHoy = 0;
+  final int _maxClicksPorDia = 3;
+
   @override
   void initState() {
     super.initState();
     _fetchArticulos();
+    _initDatosCuriosos();
+  }
+
+  Future<void> _initDatosCuriosos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final lastDate = prefs.getString('last_fact_date') ?? '';
+    
+    int clicks = prefs.getInt('fact_clicks') ?? 0;
+    int lastIndex = prefs.getInt('last_fact_index') ?? 0;
+
+    if (lastDate != today) {
+      clicks = 0;
+      // Si es un nuevo día, podríamos rotar el primer dato
+      lastIndex = (lastIndex + 1) % _datosCuriosos.length;
+      await prefs.setString('last_fact_date', today);
+      await prefs.setInt('fact_clicks', 0);
+    }
+
+    setState(() {
+      _clicksHoy = clicks;
+      _currentDatoIndex = lastIndex;
+    });
+  }
+
+  Future<void> _handleCuentameMas() async {
+    if (_clicksHoy >= _maxClicksPorDia) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _clicksHoy++;
+      _currentDatoIndex = (_currentDatoIndex + 1) % _datosCuriosos.length;
+    });
+
+    await prefs.setInt('fact_clicks', _clicksHoy);
+    await prefs.setInt('last_fact_index', _currentDatoIndex);
   }
 
   Future<void> _fetchArticulos() async {
@@ -171,7 +221,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Un celular reciclado correctamente puede recuperar materiales reutilizables como oro, cobre y aluminio.',
+                      _datosCuriosos[_currentDatoIndex],
                       style: GoogleFonts.outfit(
                         fontSize: 13,
                         color: Colors.black87,
@@ -180,10 +230,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _clicksHoy < _maxClicksPorDia ? _handleCuentameMas : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.simoAmarillo,
-                        foregroundColor: Colors.black87,
+                        backgroundColor: _clicksHoy < _maxClicksPorDia 
+                            ? AppColors.simoAmarillo 
+                            : Colors.grey.shade400,
+                        foregroundColor: _clicksHoy < _maxClicksPorDia 
+                            ? Colors.black87 
+                            : Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -192,7 +246,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             horizontal: 20, vertical: 10),
                       ),
                       child: Text(
-                        'Cuentame mas...',
+                        _clicksHoy < _maxClicksPorDia 
+                            ? 'Cuentame mas...' 
+                            : 'Vuelve mañana',
                         style: GoogleFonts.outfit(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,

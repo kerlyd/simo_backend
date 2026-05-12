@@ -4,6 +4,7 @@ import '../../data/models/usuario_model.dart';
 import '../../domain/entities/usuario_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
+import 'package:simo_app/domain/usecases/update_user_usecase.dart';
 import '../../injection_container.dart';
 
 // Estado
@@ -67,6 +68,14 @@ class AuthNotifier extends Notifier<AuthState> {
 
   void logout() {
     state = AuthInitial();
+  }
+
+  Future<void> updateUser(UsuarioEntity updatedUser) async {
+    final result = await sl<UpdateUserUseCase>().call(updatedUser);
+    result.fold(
+      (failure) => null, // Opcional: manejar error
+      (usuario) => state = AuthAuthenticated(usuario),
+    );
   }
 
   Future<void> refreshUser() async {

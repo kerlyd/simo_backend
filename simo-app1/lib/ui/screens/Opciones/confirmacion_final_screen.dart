@@ -35,6 +35,26 @@ class ConfirmacionFinalScreen extends ConsumerStatefulWidget {
 class _ConfirmacionFinalScreenState extends ConsumerState<ConfirmacionFinalScreen> {
   bool _isExpanded = true;
 
+  String _getFormattedDate(DateTime date) {
+    final months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    return "${date.day} / ${months[date.month - 1]} / ${date.year}";
+  }
+
+  DateTime _addBusinessDays(DateTime start, int days) {
+    DateTime result = start;
+    int count = 0;
+    while (count < days) {
+      result = result.add(const Duration(days: 1));
+      if (result.weekday != DateTime.saturday && result.weekday != DateTime.sunday) {
+        count++;
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,9 +130,9 @@ class _ConfirmacionFinalScreenState extends ConsumerState<ConfirmacionFinalScree
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const Text(
-                              '4 / marzo / 2026 - NIT:0129219',
-                              style: TextStyle(
+                            Text(
+                              '${_getFormattedDate(DateTime.now())} - NIT:0129219',
+                              style: const TextStyle(
                                 fontSize: 10,
                                 color: Color(0xFF333333),
                                 fontWeight: FontWeight.w800,
@@ -166,7 +186,13 @@ class _ConfirmacionFinalScreenState extends ConsumerState<ConfirmacionFinalScree
                       const SizedBox(height: 8),
                       _infoRow('Dispositivo:', widget.dispositivoLabel),
                       const SizedBox(height: 2),
-                      _infoRow('Fecha límite de entrega:', '10 / Marzo / 2026'),
+                      if (widget.metodoEntrega.toLowerCase().contains('recogemos'))
+                        _infoRow('Fecha límite de recogida:', '5 días hábiles')
+                      else
+                        _infoRow(
+                          'Fecha límite de entrega:', 
+                          _getFormattedDate(_addBusinessDays(DateTime.now(), 2))
+                        ),
                       const SizedBox(height: 2),
                       _infoRow('Puntos verdes ganados:', '${widget.puntos} puntos'),
                       const SizedBox(height: 10),

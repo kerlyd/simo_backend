@@ -14,7 +14,7 @@ const transactionalApi = new Brevo.TransactionalEmailsApi();
 
 // ─── POST /api/auth/register ───────────────────────────
 async function register(req, res) {
-  const { nombre, email, password, cedula, telefono, direccion } = req.body;
+  const { nombre, email, password, cedula, telefono, direccion, genero } = req.body;
 
   if (!nombre || !email || !password || !cedula) {
     return res.status(400).json({ error: 'nombre, email, password y cedula son obligatorios' });
@@ -38,10 +38,10 @@ async function register(req, res) {
     const hash = await bcrypt.hash(password, 10);
 
     const resultado = await pool.query(
-      `INSERT INTO usuario (nombre, email, password, cedula, telefono, direccion, rol)
-       VALUES ($1, $2, $3, $4, $5, $6, 'reciclador')
-       RETURNING id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, created_at`,
-      [nombre, email, hash, cedula, telefono || null, direccion || null]
+      `INSERT INTO usuario (nombre, email, password, cedula, telefono, direccion, rol, genero)
+       VALUES ($1, $2, $3, $4, $5, $6, 'reciclador', $7)
+       RETURNING id, nombre, email, cedula, telefono, direccion, puntos_verdes, rol, genero, created_at`,
+      [nombre, email, hash, cedula, telefono || null, direccion || null, genero || 'hombre']
     );
 
     const usuario = resultado.rows[0];

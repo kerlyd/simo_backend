@@ -11,6 +11,7 @@ abstract class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+  Future<UsuarioModel> updateUser(UsuarioModel usuario);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -49,5 +50,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': password,
       },
     );
+  }
+
+  @override
+  Future<UsuarioModel> updateUser(UsuarioModel usuario) async {
+    final response = await _dio.put(
+      '/api/usuario/me',
+      data: usuario.toJson(),
+    );
+    return UsuarioModel.fromJson(response.data['usuario']);
   }
 }

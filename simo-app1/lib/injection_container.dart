@@ -6,6 +6,7 @@ import 'package:simo_app/data/repositories/auth_repository_impl.dart';
 import 'package:simo_app/domain/repositories/auth_repository.dart';
 import 'package:simo_app/domain/usecases/login_usecase.dart';
 import 'package:simo_app/domain/usecases/register_usecase.dart';
+import 'package:simo_app/domain/usecases/update_user_usecase.dart';
 import 'package:simo_app/data/datasources/dispositivo_remote_datasource.dart';
 import 'package:simo_app/data/datasources/recompensa_remote_datasource.dart';
 import 'package:simo_app/data/datasources/punto_reciclaje_remote_datasource.dart';
@@ -15,6 +16,7 @@ final sl = GetIt.instance;
 Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateUserUseCase(sl()));
 
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl()),

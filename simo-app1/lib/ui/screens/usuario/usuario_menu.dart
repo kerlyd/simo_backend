@@ -124,51 +124,40 @@ class _UsuarioMenuScreenState extends ConsumerState<UsuarioMenuScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Stack(
-                                  clipBehavior: Clip.none,
-                                  alignment: Alignment.bottomCenter,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: simoAmarillo,
-                                          width: 4,
+                                Builder(
+                                  builder: (context) {
+                                    String avatarPath = (usuario?.genero == 'mujer') 
+                                      ? 'assets/imagenes/usuario/editar_usuario/image 26.png' 
+                                      : 'assets/imagenes/usuario/editar_usuario/image 25.png';
+                                    return Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Image.asset(
+                                          avatarPath,
+                                          height: 160,
+                                          fit: BoxFit.contain,
                                         ),
-                                      ),
-                                      child: const CircleAvatar(
-                                        radius: 45,
-                                        backgroundColor: simoCrudo,
-                                        backgroundImage: AssetImage(
-                                          'assets/imagenes/usuario/usuario.png',
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: -15,
-                                      child: Container(
-                                        width: 80,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                          vertical: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: simoAmarillo,
-                                          borderRadius: BorderRadius.circular(5),
-                                        ),
-                                        child: Text(
-                                          usuario?.nombre ?? "Nombre",
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            color: textoOscuro,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 12,
-                                            height: 1.1,
+                                        Positioned(
+                                          bottom: 22, 
+                                          child: Container(
+                                            width: 100,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              usuario?.nombre.split(' ').first ?? "Usuario",
+                                              style: const TextStyle(
+                                                color: textoOscuro,
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 13,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
+                                      ],
+                                    );
+                                  },
                                 ),
                                 const SizedBox(height: 18),
                                 MouseRegion(

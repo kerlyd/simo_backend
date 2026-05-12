@@ -315,8 +315,7 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
     }
 
     return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.zero,
       itemCount: _apiPuntos.length,
       itemBuilder: (context, index) {
@@ -427,19 +426,21 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                             Text(
                               'Destino: $aliado',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
-                                fontSize: 16,
+                                fontSize: 13, // Ajustado para que quepa mejor
                                 color: Color(0xFF333333),
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
                             Text(
                               direccion,
                               style: const TextStyle(
-                                fontSize: 12,
+                                fontSize: 10, // Más pequeño como en la referencia
                                 color: Color(0xFF6E6E6E),
                                 fontWeight: FontWeight.w700,
                               ),

@@ -6,6 +6,7 @@ class UsuarioEntity {
   final String telefono;
   final String direccion;
   final int puntosVerdes;
+  final String genero;
 
   const UsuarioEntity({
     required this.id,
@@ -15,5 +16,6 @@ class UsuarioEntity {
     required this.telefono,
     required this.direccion,
     required this.puntosVerdes,
+    required this.genero,
   });
 }

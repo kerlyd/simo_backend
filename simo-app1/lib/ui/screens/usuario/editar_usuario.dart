@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_notifier.dart';
+import '../../../data/models/usuario_model.dart';
 
 class EditarUsuarioScreen extends ConsumerStatefulWidget {
   const EditarUsuarioScreen({super.key});
@@ -26,20 +27,29 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
   @override
   void initState() {
     super.initState();
-    // Actualizar el nombre en tiempo real
+    final usuario = ref.read(authProvider).usuario;
+    if (usuario != null) {
+      _nombreController.text = usuario.nombre;
+      _cedulaController.text = usuario.cedula;
+      _telefonoController.text = usuario.telefono;
+      _direccionController.text = usuario.direccion;
+      _correoController.text = usuario.email;
+      _esFemenino = usuario.genero == 'mujer';
+      _actualizarNombreAMostrar(usuario.nombre);
+    }
+
     _nombreController.addListener(() {
-      setState(() {
-        if (_nombreController.text.trim().isNotEmpty) {
-          final words = _nombreController.text.trim().split(RegExp(r'\s+'));
-          final capitalizedWords = words.map((w) {
-            if (w.isEmpty) return w;
-            return '${w[0].toUpperCase()}${w.substring(1).toLowerCase()}';
-          });
-          _nombreAMostrar = capitalizedWords.join('\n');
-        } else {
-          _nombreAMostrar = "Nombre";
-        }
-      });
+      _actualizarNombreAMostrar(_nombreController.text);
+    });
+  }
+
+  void _actualizarNombreAMostrar(String text) {
+    setState(() {
+      if (text.trim().isNotEmpty) {
+        _nombreAMostrar = text.trim().split(' ').first;
+      } else {
+        _nombreAMostrar = "Nombre";
+      }
     });
   }
 
@@ -53,16 +63,33 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
     super.dispose();
   }
 
-  void _confirmar() {
+  void _confirmar() async {
     if (_formKey.currentState!.validate()) {
-      // Simular guardado
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('¡Información guardada exitosamente!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Aquí iría la lógica de backend
+      // Aquí simulamos el guardado en el estado local de Riverpod
+      // En una app real, aquí llamarías a tu API
+      final currentUser = ref.read(authProvider).usuario;
+      if (currentUser != null) {
+        final updatedUser = (currentUser as UsuarioModel).copyWith(
+          nombre: _nombreController.text,
+          cedula: _cedulaController.text,
+          telefono: _telefonoController.text,
+          direccion: _direccionController.text,
+          email: _correoController.text,
+          genero: _esFemenino ? 'mujer' : 'hombre',
+        );
+        
+        // Actualizamos el notifier con los nuevos datos
+        await ref.read(authProvider.notifier).updateUser(updatedUser);
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('¡Información guardada exitosamente!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        Navigator.pop(context); // Vuelve a la pantalla de Usuario
+      }
     }
   }
 
@@ -93,7 +120,13 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.asset('assets/imagenes/usuario/simo.png', height: 45),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Image.asset(
+                      'assets/imagenes/canjear/atras.png',
+                      height: 24,
+                    ),
+                  ),
                   Row(
                     children: [
                       Image.asset(
@@ -130,267 +163,251 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
                 ),
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      Text(
-                        '¡Mi información!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Text(
+                          '¡Mi información!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                      // Sección Superior: Toggle + Avatar
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Selector de género
-                          Container(
-                            width: 70,
-                            decoration: BoxDecoration(
-                              color: colorFondoInput,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                        // Sección Superior: Toggle + Avatar
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Selector de género
+                            Container(
+                              width: 70,
+                              decoration: BoxDecoration(
+                                color: colorFondoInput,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _esFemenino = true),
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: _esFemenino
+                                            ? colorAmarillo.withOpacity(0.3)
+                                            : Colors.transparent,
+                                        borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const Icon(
+                                            Icons.female,
+                                            color: colorTexto,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Femenino',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: colorTexto,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    width: double.infinity,
+                                    color: colorGris,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _esFemenino = false),
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: !_esFemenino
+                                            ? colorAmarillo.withOpacity(0.3)
+                                            : Colors.transparent,
+                                        borderRadius: const BorderRadius.vertical(
+                                          bottom: Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          const Icon(
+                                            Icons.male,
+                                            color: colorTexto,
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Masculino',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: colorTexto,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            child: Column(
+
+                            const SizedBox(width: 16),
+
+                            // Avatar interactivo
+                            Stack(
+                              alignment: Alignment.center,
                               children: [
-                                GestureDetector(
-                                  onTap: () =>
-                                      setState(() => _esFemenino = true),
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: _esFemenino
-                                          ? colorAmarillo.withOpacity(0.3)
-                                          : Colors.transparent,
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const Icon(
-                                          Icons.female,
-                                          color: colorTexto,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Femenino',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: colorTexto,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                Image.asset(
+                                  _esFemenino
+                                      ? 'assets/imagenes/usuario/editar_usuario/image 26.png'
+                                      : 'assets/imagenes/usuario/editar_usuario/image 25.png',
+                                  height: 160,
+                                  fit: BoxFit.contain,
                                 ),
-                                Container(
-                                  height: 1,
-                                  width: double.infinity,
-                                  color: colorGris,
-                                ),
-                                GestureDetector(
-                                  onTap: () =>
-                                      setState(() => _esFemenino = false),
+                                Positioned(
+                                  bottom: 22,
                                   child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: !_esFemenino
-                                          ? colorAmarillo.withOpacity(0.3)
-                                          : Colors.transparent,
-                                      borderRadius: const BorderRadius.vertical(
-                                        bottom: Radius.circular(12),
+                                    width: 100,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      _nombreAMostrar,
+                                      style: const TextStyle(
+                                        color: Color(0xFF404040),
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 13,
                                       ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        const Icon(
-                                          Icons.male,
-                                          color: colorTexto,
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'Masculino',
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: colorTexto,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
+                            const SizedBox(width: 12), // Balance visual
+                          ],
+                        ),
+                        const SizedBox(height: 22),
 
-                          const SizedBox(width: 16),
+                        // Campos del formulario
+                        _crearInput(
+                          controller: _nombreController,
+                          icon: Icons.person,
+                          hint: 'Nombre',
+                          textCapitalization: TextCapitalization.words,
+                          validator: (v) =>
+                              v!.isEmpty ? 'El nombre es requerido' : null,
+                        ),
+                        const SizedBox(height: 8),
 
-                          // Avatar interactivo
-                          Stack(
-                            alignment: Alignment.bottomCenter,
-                            clipBehavior: Clip.none,
-                            children: [
-                              Container(
-                                width: 110,
-                                height: 110,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorFondoInput,
-                                  border: Border.all(
-                                    color: colorAmarillo,
-                                    width: 4,
-                                  ),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      _esFemenino
-                                          ? 'assets/imagenes/usuario/editar_usuario/image 26.png'
-                                          : 'assets/imagenes/usuario/editar_usuario/image 25.png',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                        _crearInput(
+                          controller: _cedulaController,
+                          icon: Icons.badge,
+                          hint: 'Cédula',
+                          keyboardType: TextInputType.number,
+                          validator: (v) {
+                            if (v!.isEmpty) return 'La cédula es requerida';
+                            if (double.tryParse(v) == null) {
+                              return 'Debe ser un número válido';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+
+                        _crearInput(
+                          controller: _telefonoController,
+                          icon: Icons.phone,
+                          hint: 'Teléfono',
+                          keyboardType: TextInputType.phone,
+                          validator: (v) {
+                            if (v!.isEmpty) return 'El teléfono es requerido';
+                            if (double.tryParse(v) == null) {
+                              return 'Debe ser un número válido';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+
+                        _crearInput(
+                          controller: _direccionController,
+                          icon: Icons.home,
+                          hint: 'Dirección',
+                          validator: (v) =>
+                              v!.isEmpty ? 'La dirección es requerida' : null,
+                        ),
+                        const SizedBox(height: 8),
+
+                        _crearInput(
+                          controller: _correoController,
+                          icon: Icons.email,
+                          hint: 'Correo electrónico',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (v) {
+                            if (v!.isEmpty) return 'El correo es requerido';
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(v)) {
+                              return 'Ingrese un correo válido';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Botón Confirmar
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: _confirmar,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorAmarillo,
+                              foregroundColor: colorTexto,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              Positioned(
-                                bottom: 16,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4,
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 100,
-                                  ),
-                                  child: Text(
-                                    _nombreAMostrar,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: colorTexto,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                      height: 1.1,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 12), // Balance visual
-                        ],
-                      ),
-                      const SizedBox(height: 22),
-
-                      // Campos del formulario
-                      _crearInput(
-                        controller: _nombreController,
-                        icon: Icons.person,
-                        hint: 'Nombre',
-                        textCapitalization: TextCapitalization.words,
-                        validator: (v) =>
-                            v!.isEmpty ? 'El nombre es requerido' : null,
-                      ),
-                      const SizedBox(height: 8),
-
-                      _crearInput(
-                        controller: _cedulaController,
-                        icon: Icons.badge,
-                        hint: 'Cédula',
-                        keyboardType: TextInputType.number,
-                        validator: (v) {
-                          if (v!.isEmpty) return 'La cédula es requerida';
-                          if (double.tryParse(v) == null) {
-                            return 'Debe ser un número válido';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 8),
-
-                      _crearInput(
-                        controller: _telefonoController,
-                        icon: Icons.phone,
-                        hint: 'Teléfono',
-                        keyboardType: TextInputType.phone,
-                        validator: (v) {
-                          if (v!.isEmpty) return 'El teléfono es requerido';
-                          if (double.tryParse(v) == null) {
-                            return 'Debe ser un número válido';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 8),
-
-                      _crearInput(
-                        controller: _direccionController,
-                        icon: Icons.home,
-                        hint: 'Dirección',
-                        validator: (v) =>
-                            v!.isEmpty ? 'La dirección es requerida' : null,
-                      ),
-                      const SizedBox(height: 8),
-
-                      _crearInput(
-                        controller: _correoController,
-                        icon: Icons.email,
-                        hint: 'Correo electrónico',
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (v) {
-                          if (v!.isEmpty) return 'El correo es requerido';
-                          if (!RegExp(
-                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                          ).hasMatch(v)) {
-                            return 'Ingrese un correo válido';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Botón Confirmar
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: _confirmar,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorAmarillo,
-                            foregroundColor: colorTexto,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              elevation: 4,
                             ),
-                            elevation: 4,
-                          ),
-                          child: Text(
-                            'Confirmar',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            child: Text(
+                              'Confirmar',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                    ],
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
               ),
