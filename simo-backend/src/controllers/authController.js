@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const Brevo = require('@getbrevo/brevo');
+const SibApiV3Sdk = require('@getbrevo/brevo');
 const pool = require('../db/pool');
 
 // Variables de entorno necesarias:
@@ -8,8 +8,8 @@ const pool = require('../db/pool');
 // BREVO_SENDER_EMAIL
 
 // ─── Configuración de Brevo ──────────────────────────────
-const apiInstance = new Brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
+let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+apiInstance.setApiKey(SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
 // ─── POST /api/auth/register ───────────────────────────
 async function register(req, res) {
