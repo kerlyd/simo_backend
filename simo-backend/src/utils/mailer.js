@@ -1,37 +1,26 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Configuración de Gmail ULTRA-COMPATIBLE para Railway
-const transporter = nodemailer.createTransport({
-  host: '74.125.141.108', // IP directa de smtp.gmail.com (IPv4) para evitar fallos de red
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-    servername: 'smtp.gmail.com' // Necesario al usar la IP directa
-  }
-});
+// Usamos Resend por API (HTTP) porque Railway bloquea los puertos de correo (SMTP)
+// Usaremos la API KEY de Resend que ya tenías o una de prueba
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dYLJ8m8h_CwDTvYJHsd4knTikDhnCtLg2');
 
 /**
- * Envía un correo electrónico usando Gmail
+ * Envía un correo electrónico usando la API de Resend
  */
 async function enviarCorreo(to, subject, html) {
-  const mailOptions = {
-    from: `"SIMÖ" <${process.env.GMAIL_USER}>`,
-    to: to,
-    subject: subject,
-    html: html,
-  };
-
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Correo enviado correctamente (Gmail IPv4):', info.messageId);
-    return info;
+    console.log('Solicitando envío a Resend API...');
+    const data = await resend.emails.send({
+      from: 'SIMÖ <onboarding@resend.dev>', // Dominio de prueba de Resend que SIEMPRE funciona
+      to: to,
+      subject: subject,
+      html: html,
+    });
+    
+    console.log('Respuesta de Resend:', data);
+    return data;
   } catch (error) {
-    console.error('Error detallado de Gmail:', error);
+    console.error('Error detallado de Resend API:', error);
     throw error;
   }
 }
