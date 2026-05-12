@@ -1,10 +1,16 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { Resend } = require('resend');
+const Brevo = require('@getbrevo/brevo');
 const pool = require('../db/pool');
 
-// ─── Configuración de Resend ──────────────────────────────
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Variables de entorno necesarias:
+// BREVO_API_KEY
+// BREVO_SENDER_EMAIL
+
+// ─── Configuración de Brevo ──────────────────────────────
+const brevoClient = Brevo.ApiClient.instance;
+brevoClient.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+const transactionalApi = new Brevo.TransactionalEmailsApi();
 
 // ─── POST /api/auth/register ───────────────────────────
 async function register(req, res) {
@@ -123,12 +129,13 @@ async function recuperarPassword(req, res) {
     const BASE_URL = process.env.BASE_URL || `http://192.168.1.4:${process.env.PORT || 3000}`;
     const enlace = `${BASE_URL}/api/auth/reset-redirect?token=${resetToken}`;
 
-    // Enviar el correo con Resend
-    await resend.emails.send({
-      from: 'SIMÖ <onboarding@resend.dev>',
-      to: email,
-      subject: '🔑 Recupera tu contraseña en SIMÖ',
-      html: `
+    // Enviar el correo con Brevo
+    try {
+      await transactionalApi.sendTransacEmail({
+        sender: { name: 'SIMÖ', email: process.env.BREVO_SENDER_EMAIL },
+        to: [{ email: email }],
+        subject: '🔑 Recupera tu contraseña en SIMÖ',
+        htmlContent: `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; background: #f7f4ec; border-radius: 12px;">
           <h1 style="color: #db007f; text-align: center; font-size: 28px; margin-bottom: 8px;">SIMÖ</h1>
           <h2 style="color: #333; text-align: center; font-size: 20px;">Recupera tu contraseña</h2>
@@ -143,7 +150,11 @@ async function recuperarPassword(req, res) {
           <p style="color: #888; font-size: 13px; text-align: center;">Si no solicitaste esto, puedes ignorar este correo.</p>
         </div>
       `,
-    });
+      });
+    } catch (mailError) {
+      console.error('Error enviando el correo:', mailError);
+      throw mailError;
+    }
 
     res.json({ message: 'Si ese correo está registrado, recibirás un enlace.' });
   } catch (err) {
