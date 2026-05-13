@@ -19,6 +19,7 @@ import '../../providers/notificacion_notifier.dart';
 import '../../providers/detalle_solicitud_notifier.dart';
 import '../../widgets/notificaciones/historial_card.dart';
 import '../../widgets/notificaciones/notificacion_card.dart';
+import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 import 'detalle_solicitud_screen.dart';
 
 class NotificacionesScreen extends ConsumerStatefulWidget {
@@ -73,6 +74,23 @@ class _NotificacionesScreenState extends ConsumerState<NotificacionesScreen> {
 
   void _onStateChange() => setState(() {});
 
+  void _onNavTap(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushReplacementNamed(context, '/opciones');
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, '/canjear');
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, '/usuario');
+        break;
+    }
+  }
+
   @override
   void dispose() {
     _notifier.removeListener(_onStateChange);
@@ -118,8 +136,11 @@ class _NotificacionesScreenState extends ConsumerState<NotificacionesScreen> {
               ],
             ),
           ),
-          _buildBottomNav(context),
         ],
+      ),
+      bottomNavigationBar: SimoBottomNav(
+        currentIndex: -1, // Ninguno activo porque es notificaciones
+        onTap: _onNavTap,
       ),
     );
   }
@@ -234,49 +255,6 @@ class _NotificacionesScreenState extends ConsumerState<NotificacionesScreen> {
       },
     );
   }
-
-  Widget _buildBottomNav(BuildContext context) {
-    final botPad = MediaQuery.of(context).padding.bottom;
-    return Container(
-      padding: EdgeInsets.fromLTRB(16, 20, 16, botPad + 12),
-      decoration: const BoxDecoration(
-        color: _crudo,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _NavItem(
-            icon: 'assets/imagenes/canjear/Inicio_icono.png',
-            label: 'Inicio',
-            active: false,
-            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
-          ),
-          _NavItem(
-            icon: 'assets/imagenes/canjear/opciones_icono.png',
-            label: 'Opciones',
-            active: false,
-            onTap: () => Navigator.pushReplacementNamed(context, '/opciones'),
-          ),
-          _NavItem(
-            icon: 'assets/imagenes/canjear/Canjear_icono.png',
-            label: 'Canjear',
-            active: false,
-            onTap: () => Navigator.pushReplacementNamed(context, '/canjear'),
-          ),
-          _NavItem(
-            icon: 'assets/imagenes/canjear/usuario_icono.png',
-            label: 'Usuario',
-            active: false,
-            onTap: () => Navigator.pushReplacementNamed(context, '/usuario'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _TabButton extends StatelessWidget {
@@ -313,44 +291,7 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
-  final String icon;
-  final String label;
-  final bool active;
-  final VoidCallback onTap;
 
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.active,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(icon, width: 36, height: 36),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 11,
-                fontWeight: active ? FontWeight.bold : FontWeight.w600,
-                color: const Color(0xFF1E272E),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _ErrorView extends StatelessWidget {
   final String message;
