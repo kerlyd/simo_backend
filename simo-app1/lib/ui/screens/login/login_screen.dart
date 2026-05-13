@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'registro_screen.dart';
 import '../../providers/auth_notifier.dart';
 import 'rol_selection_screen.dart';
@@ -22,13 +23,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _verPassword = false;
 
   @override
+  void initState() {
+    super.initState();
+    _loadSavedData();
+  }
+
+  Future<void> _loadSavedData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedNombre = prefs.getString('remember_nombre') ?? '';
+    final savedPassword = prefs.getString('remember_password') ?? '';
+    final recordar = prefs.getBool('remember_me') ?? false;
+
+    if (recordar) {
+      setState(() {
+        _nombreController.text = savedNombre;
+        _passwordController.text = savedPassword;
+        _recordarDatos = true;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _nombreController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     final nombre = _nombreController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -37,6 +59,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         const SnackBar(content: Text('Completa todos los campos')),
       );
       return;
+    }
+
+    // Guardar o borrar datos según el checkbox
+    final prefs = await SharedPreferences.getInstance();
+    if (_recordarDatos) {
+      await prefs.setString('remember_nombre', nombre);
+      await prefs.setString('remember_password', password);
+      await prefs.setBool('remember_me', true);
+    } else {
+      await prefs.remove('remember_nombre');
+      await prefs.remove('remember_password');
+      await prefs.setBool('remember_me', false);
     }
 
     ref.read(authProvider.notifier).login(nombre, password);
