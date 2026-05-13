@@ -464,8 +464,9 @@ class _SeccionConfirmacion extends StatelessWidget {
             onTap: onToggle,
             behavior: HitTestBehavior.opaque,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -474,10 +475,20 @@ class _SeccionConfirmacion extends StatelessWidget {
                   ),
                   const Spacer(),
                   Flexible(
-                    child: Text(
-                      '${_formatDate(detalle.fecha)} - NIT: ${detalle.nit}',
-                      style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, color: _textoDark),
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${_formatDate(detalle.fecha)} - NIT: ${detalle.nit}',
+                          style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, color: _textoDark),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (expanded)
+                          Text(
+                            'Detalles de la solicitud',
+                            style: GoogleFonts.plusJakartaSans(fontSize: 10, fontWeight: FontWeight.w600, color: _textoDark),
+                          ),
+                      ],
                     ),
                   ),
                 ],
@@ -507,14 +518,7 @@ class _ConfirmacionDetalle extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              'Detalles de la solicitud',
-              style: GoogleFonts.plusJakartaSans(fontSize: 11, fontWeight: FontWeight.w600, color: _textoDark),
-            ),
-          ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -526,7 +530,7 @@ class _ConfirmacionDetalle extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'CODE: ${detalle.codigo}',
+                  'CODE: ${detalle.codigo.length > 8 ? detalle.codigo.substring(0, 8) : detalle.codigo}',
                   style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.bold, color: _azul),
                   textAlign: TextAlign.right,
                 ),

@@ -450,42 +450,49 @@ class _OpcionesScreenState extends ConsumerState<OpcionesScreen>
                             const SizedBox(height: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
+                                horizontal: 10,
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
                                 color: colorBoton,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(
-                                metodo,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900,
-                                  color: Color(0xFF424242),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  metodo,
+                                  style: const TextStyle(
+                                    fontSize: 11, // Slightly smaller base font
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF424242),
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(width: 4),
                       // Puntos
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
                             'assets/imagenes/canjear/flor.png',
-                            height: 36,
-                            width: 36,
+                            height: 32, // Slightly smaller icon
+                            width: 32,
                             fit: BoxFit.contain,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '$puntos',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 24,
-                              color: Color(0xFF424242),
+                          const SizedBox(width: 4),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              '$puntos',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 22, // Slightly smaller base font
+                                color: Color(0xFF424242),
+                              ),
                             ),
                           ),
                         ],
