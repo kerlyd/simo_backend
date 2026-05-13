@@ -230,6 +230,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             reward.nombre,
@@ -239,23 +240,12 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                               fontSize: 14,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 12),
                           Image.asset(
                             'assets/imagenes/canjear/$logoPath',
-                            width: 110,
-                            height: 32,
+                            width: logoPath == 'hym.png' ? 180 : 130,
+                            height: logoPath == 'hym.png' ? 90 : 55,
                             fit: BoxFit.contain,
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            reward.descripcion,
-                            style: const TextStyle(
-                              color: Color(0xFF7B7B7B),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),
