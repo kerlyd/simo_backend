@@ -31,7 +31,6 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
       final parts = widget.token.split('.');
       if (parts.length >= 2) {
         final payload = parts[1];
-        // Normalizar base64 para evitar errores de padding
         String normalized = base64.normalize(payload);
         String decoded = utf8.decode(base64.decode(normalized));
         final Map<String, dynamic> data = json.decode(decoded);
@@ -130,7 +129,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                   '¡RECUPERA TU\nCONTRASEÑA!',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
-                    fontSize: 30, // Ajustado para que no se corte
+                    fontSize: 38, // Aumentado para mejor impacto
                     fontWeight: FontWeight.w900,
                     color: const Color(0xFFdb007f),
                     height: 1.1,
@@ -224,13 +223,13 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
 
                 Center(
                   child: SizedBox(
-                    width: 240,
+                    width: 220, // Un poco más estrecho
                     child: ElevatedButton(
                       onPressed: _cargando ? null : _cambiarPassword,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFdb007f),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 25),
+                        padding: const EdgeInsets.symmetric(vertical: 18), // Reducido para mejor estética
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),

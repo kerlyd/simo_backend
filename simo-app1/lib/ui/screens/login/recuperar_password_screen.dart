@@ -101,7 +101,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
           '¡CORREO ENVIADO!',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 30,
+            fontSize: 32,
             fontWeight: FontWeight.w900,
             color: const Color(0xFFdb007f),
             height: 1.1,
@@ -155,7 +155,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
           '¡RECUPERA TU\nCONTRASEÑA!',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 30, // Reducido para que quepa en una línea
+            fontSize: 38, 
             fontWeight: FontWeight.w900,
             color: const Color(0xFFdb007f),
             height: 1.1,
@@ -206,7 +206,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
                 backgroundColor: const Color(0xFFdb007f),
                 foregroundColor: Colors.white,
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(vertical: 25),
+                padding: const EdgeInsets.symmetric(vertical: 18),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -216,7 +216,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
                   : Text(
                       'ACEPTAR',
                       style: GoogleFonts.outfit(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
