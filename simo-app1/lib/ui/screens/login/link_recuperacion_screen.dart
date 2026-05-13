@@ -29,17 +29,21 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
   void _extraerEmail() {
     try {
       final parts = widget.token.split('.');
-      if (parts.length == 3) {
+      if (parts.length >= 2) {
         final payload = parts[1];
+        // Normalizar base64 para evitar errores de padding
         String normalized = base64.normalize(payload);
-        String resp = utf8.decode(base64.decode(normalized));
-        final Map<String, dynamic> data = json.decode(resp);
+        String decoded = utf8.decode(base64.decode(normalized));
+        final Map<String, dynamic> data = json.decode(decoded);
         setState(() {
-          _emailUsuario = data['email'] ?? '';
+          _emailUsuario = data['email'] ?? 'Usuario SIMÖ';
         });
       }
     } catch (e) {
       debugPrint('Error al decodificar email: $e');
+      setState(() {
+        _emailUsuario = 'Usuario verificado';
+      });
     }
   }
 
@@ -85,9 +89,9 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('✅ Contraseña actualizada correctamente', style: GoogleFonts.outfit()),
-            backgroundColor: Colors.green.shade700,
+          const SnackBar(
+            content: Text('✅ Contraseña actualizada correctamente'),
+            backgroundColor: Colors.green,
           ),
         );
         Navigator.pushAndRemoveUntil(
@@ -106,7 +110,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
 
   void _mostrarError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg, style: GoogleFonts.outfit()), backgroundColor: Colors.red.shade700),
+      SnackBar(content: Text(msg), backgroundColor: Colors.red),
     );
   }
 
@@ -123,10 +127,10 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  '¡ RECUPERA TU\nCONTRASEÑA !',
+                  '¡RECUPERA TU\nCONTRASEÑA!',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
-                    fontSize: 45,
+                    fontSize: 30, // Ajustado para que no se corte
                     fontWeight: FontWeight.w900,
                     color: const Color(0xFFdb007f),
                     height: 1.1,
@@ -134,22 +138,38 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                 ),
                 const SizedBox(height: 48),
                 
-                // Campo Email (Solo lectura)
-                Text('Correo electrónico', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
+                Text(
+                  'Correo electrónico',
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFdb007f),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    hintText: _emailUsuario.isEmpty ? 'Cargando correo...' : _emailUsuario,
+                    hintText: _emailUsuario,
+                    hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     filled: true,
                     fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Campo Nueva Clave
-                Text('Contraseña nueva', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
+                Text(
+                  'Contraseña nueva',
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFdb007f),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _passwordController,
@@ -157,17 +177,29 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                     suffixIcon: IconButton(
-                      icon: Icon(_ocultarPassword ? Icons.visibility_off : Icons.visibility, color: Colors.white),
+                      icon: Icon(
+                        _ocultarPassword ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.white,
+                      ),
                       onPressed: () => setState(() => _ocultarPassword = !_ocultarPassword),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // Campo Confirmar
-                Text('Confirmar contraseña', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFFdb007f))),
+                Text(
+                  'Confirmar contraseña',
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFdb007f),
+                  ),
+                ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _confirmPasswordController,
@@ -175,16 +207,21 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: const Color(0xFFdb007f).withOpacity(0.50),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                     suffixIcon: IconButton(
-                      icon: Icon(_ocultarConfirm ? Icons.visibility_off : Icons.visibility, color: Colors.white),
+                      icon: Icon(
+                        _ocultarConfirm ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.white,
+                      ),
                       onPressed: () => setState(() => _ocultarConfirm = !_ocultarConfirm),
                     ),
                   ),
                 ),
                 const SizedBox(height: 48),
 
-                // Botón Final
                 Center(
                   child: SizedBox(
                     width: 240,
@@ -194,9 +231,19 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                         backgroundColor: const Color(0xFFdb007f),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 25),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                      child: _cargando ? const CircularProgressIndicator(color: Colors.white) : Text('ENVIAR ENLACE', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: _cargando 
+                        ? const CircularProgressIndicator(color: Colors.white) 
+                        : Text(
+                            'ACEPTAR',
+                            style: GoogleFonts.outfit(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                     ),
                   ),
                 ),
