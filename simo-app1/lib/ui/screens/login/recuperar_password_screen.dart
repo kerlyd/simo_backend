@@ -98,10 +98,10 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
         ),
         const SizedBox(height: 24),
         Text(
-          '¡ CORREO ENVIADO !',
+          '¡CORREO ENVIADO!',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 36,
+            fontSize: 30,
             fontWeight: FontWeight.w900,
             color: const Color(0xFFdb007f),
             height: 1.1,
@@ -152,10 +152,10 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          '¡ RECUPERA TU\nCONTRASEÑA !',
+          '¡RECUPERA TU\nCONTRASEÑA!',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 45,
+            fontSize: 30, // Reducido para que quepa en una línea
             fontWeight: FontWeight.w900,
             color: const Color(0xFFdb007f),
             height: 1.1,
@@ -214,7 +214,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
               child: _cargando
                   ? const CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      'ENVIAR ENLACE',
+                      'ACEPTAR',
                       style: GoogleFonts.outfit(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
