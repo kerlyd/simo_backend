@@ -129,7 +129,7 @@ class _LinkRecuperacionScreenState extends State<LinkRecuperacionScreen> {
                   '¡RECUPERA TU\nCONTRASEÑA!',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.outfit(
-                    fontSize: 38, // Aumentado para mejor impacto
+                    fontSize: 32, // Reducido de 38 para evitar desbordamiento
                     fontWeight: FontWeight.w900,
                     color: const Color(0xFFdb007f),
                     height: 1.1,

@@ -155,7 +155,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
           '¡RECUPERA TU\nCONTRASEÑA!',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 38, 
+            fontSize: 32, // Reducido de 38 para evitar desbordamiento
             fontWeight: FontWeight.w900,
             color: const Color(0xFFdb007f),
             height: 1.1,
@@ -166,7 +166,7 @@ class _RecuperarPasswordScreenState extends State<RecuperarPasswordScreen> {
           'Te enviaremos un enlace para restablecer\ntu contraseña y que puedas volver a\nentrar a tu cuenta.',
           textAlign: TextAlign.center,
           style: GoogleFonts.outfit(
-            fontSize: 18,
+            fontSize: 15, // Reducido de 18 para evitar desbordamiento
             fontWeight: FontWeight.w500,
             color: const Color(0xFFdb007f),
           ),
