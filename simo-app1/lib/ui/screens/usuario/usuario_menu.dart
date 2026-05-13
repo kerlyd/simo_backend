@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_notifier.dart';
+import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 
 const Color simoMagenta = Color(0xFFD8006B);
 const Color simoAmarillo = Color(0xFFF5B800);
@@ -371,45 +372,22 @@ class _UsuarioMenuScreenState extends ConsumerState<UsuarioMenuScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(top: 15, bottom: 20),
-        decoration: const BoxDecoration(
-          color: simoCrudo,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            _buildBottomNavItem(
-              'Inicio',
-              'assets/imagenes/usuario/icono_inicio.png',
-              false,
-              onTap: () => Navigator.pushReplacementNamed(context, '/home'),
-            ),
-            _buildBottomNavItem(
-              'Opciones',
-              'assets/imagenes/usuario/icono_opciones.png',
-              false,
-              onTap: () => Navigator.pushReplacementNamed(context, '/opciones'),
-            ),
-            _buildBottomNavItem(
-              'Canjear',
-              'assets/imagenes/usuario/icono_canjear.png',
-              false,
-              onTap: () => Navigator.pushReplacementNamed(context, '/canjear'),
-            ),
-            _buildBottomNavItem(
-              'Usuario',
-              'assets/imagenes/usuario/icono_usuario.png',
-              true,
-              onTap: () {},
-            ),
-          ],
-        ),
+      bottomNavigationBar: SimoBottomNav(
+        currentIndex: 3,
+        onTap: (index) {
+          if (index == 3) return;
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, '/home');
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/opciones');
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, '/canjear');
+              break;
+          }
+        },
       ),
     );
   }
@@ -477,39 +455,5 @@ class _UsuarioMenuScreenState extends ConsumerState<UsuarioMenuScreen> {
     );
   }
 
-  Widget _buildBottomNavItem(
-    String label,
-    String iconPath,
-    bool isSelected, {
-    VoidCallback? onTap,
-  }) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(iconPath, height: 32),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                color: textoOscuro,
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Container(
-              height: 3,
-              width: 40,
-              color: isSelected ? simoMagenta : Colors.transparent,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 }

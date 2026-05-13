@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_notifier.dart';
 import '../../../data/models/usuario_model.dart';
+import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 
 class EditarUsuarioScreen extends ConsumerStatefulWidget {
   const EditarUsuarioScreen({super.key});
@@ -415,45 +416,22 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(top: 12, bottom: 12),
-        decoration: const BoxDecoration(
-          color: Color(0xFFF7F4EC),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            _buildBottomNavItem(
-              'Inicio',
-              'assets/imagenes/usuario/icono_inicio.png',
-              false,
-              onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false),
-            ),
-            _buildBottomNavItem(
-              'Opciones',
-              'assets/imagenes/usuario/icono_opciones.png',
-              false,
-              onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/opciones', (route) => false),
-            ),
-            _buildBottomNavItem(
-              'Canjear',
-              'assets/imagenes/usuario/icono_canjear.png',
-              false,
-              onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/canjear', (route) => false),
-            ),
-            _buildBottomNavItem(
-              'Usuario',
-              'assets/imagenes/usuario/icono_usuario.png',
-              true,
-              onTap: () => Navigator.pushNamedAndRemoveUntil(context, '/usuario', (route) => false),
-            ),
-          ],
-        ),
+      bottomNavigationBar: SimoBottomNav(
+        currentIndex: 3,
+        onTap: (index) {
+          if (index == 3) return;
+          switch (index) {
+            case 0:
+              Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+              break;
+            case 1:
+              Navigator.pushNamedAndRemoveUntil(context, '/opciones', (route) => false);
+              break;
+            case 2:
+              Navigator.pushNamedAndRemoveUntil(context, '/canjear', (route) => false);
+              break;
+          }
+        },
       ),
     );
   }
@@ -494,36 +472,5 @@ class _EditarUsuarioScreenState extends ConsumerState<EditarUsuarioScreen> {
     );
   }
 
-  Widget _buildBottomNavItem(
-    String label,
-    String iconPath,
-    bool isSelected, {
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(iconPath, height: 32),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: const Color(0xFF333333),
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            height: 3,
-            width: 40,
-            color: isSelected ? const Color(0xFFD8006B) : Colors.transparent,
-          ),
-        ],
-      ),
-    );
-  }
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 
 class CanjearExitoScreen extends StatefulWidget {
   const CanjearExitoScreen({super.key});
@@ -13,7 +14,7 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
   static const Color textoOscuro = Color(0xFF333333);
   static const Color simoAmarillo = Color(0xFFF5B800);
 
-  int _selectedNavIndex = 2;
+
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -26,9 +27,7 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
   }
 
   void _onNavTap(int index) {
-    setState(() {
-      _selectedNavIndex = index;
-    });
+
 
     switch (index) {
       case 0:
@@ -46,54 +45,15 @@ class _CanjearExitoScreenState extends State<CanjearExitoScreen> {
     }
   }
 
-  Widget _buildNavItem(String iconName, String label, int index) {
-    final isSelected = _selectedNavIndex == index;
-    return Expanded(
-      child: InkWell(
-        onTap: () => _onNavTap(index),
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'assets/imagenes/canjear/$iconName',
-                width: 24,
-                height: 24,
-                color: isSelected ? simoMagenta : textoOscuro,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? simoMagenta : textoOscuro,
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: simoMagenta,
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          children: [
-            _buildNavItem('Inicio_icono.png', 'Inicio', 0),
-            _buildNavItem('opciones_icono.png', 'Opciones', 1),
-            _buildNavItem('Canjear_icono.png', 'Canjear', 2),
-            _buildNavItem('usuario_icono.png', 'Usuario', 3),
-          ],
-        ),
+      bottomNavigationBar: SimoBottomNav(
+        currentIndex: 2,
+        onTap: (index) => _onNavTap(index),
       ),
       body: Column(
         children: [

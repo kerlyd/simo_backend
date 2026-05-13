@@ -5,6 +5,7 @@ import '../../providers/auth_notifier.dart';
 import '../../../injection_container.dart';
 import '../../../data/datasources/recompensa_remote_datasource.dart';
 import '../../../data/models/recompensa_model.dart';
+import '../../widgets/widgetsopciones/simo_bottom_nav.dart';
 
 class CanjearPrincipal extends ConsumerStatefulWidget {
   const CanjearPrincipal({super.key});
@@ -19,7 +20,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
   static const Color simoCrudo = Color(0xFFF7F4EC);
   static const Color textoOscuro = Color(0xFF333333);
 
-  final int _selectedNavIndex = 2;
+
   int _selectedRewardIndex = -1;
 
   List<RecompensaModel> _rewards = [];
@@ -60,7 +61,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
   }
 
   void _onNavTap(int index) {
-    if (index == _selectedNavIndex) return;
+    if (index == 2) return;
 
     switch (index) {
       case 0:
@@ -129,41 +130,7 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
     }
   }
 
-  Widget _buildNavItem(String iconName, String label, int index) {
-    final isSelected = _selectedNavIndex == index;
-    return Expanded(
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: InkWell(
-          onTap: () => _onNavTap(index),
-          borderRadius: BorderRadius.circular(14),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  'assets/imagenes/canjear/$iconName',
-                  width: 24,
-                  height: 24,
-                  color: isSelected ? simoMagenta : textoOscuro,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: isSelected ? simoMagenta : textoOscuro,
-                    fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildRewardCard(int index) {
     final reward = _rewards[index];
@@ -243,8 +210,8 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
                           const SizedBox(height: 12),
                           Image.asset(
                             'assets/imagenes/canjear/$logoPath',
-                            width: logoPath == 'hym.png' ? 180 : 130,
-                            height: logoPath == 'hym.png' ? 90 : 55,
+                            width: logoPath == 'hym.png' ? 140 : 130,
+                            height: 55,
                             fit: BoxFit.contain,
                           ),
                         ],
@@ -321,17 +288,9 @@ class _CanjearPrincipalState extends ConsumerState<CanjearPrincipal> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: simoMagenta,
-      bottomNavigationBar: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Row(
-          children: [
-            _buildNavItem('Inicio_icono.png', 'Inicio', 0),
-            _buildNavItem('opciones_icono.png', 'Opciones', 1),
-            _buildNavItem('Canjear_icono.png', 'Canjear', 2),
-            _buildNavItem('usuario_icono.png', 'Usuario', 3),
-          ],
-        ),
+      bottomNavigationBar: SimoBottomNav(
+        currentIndex: 2,
+        onTap: (index) => _onNavTap(index),
       ),
       body: Column(
         children: [
