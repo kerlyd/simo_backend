@@ -37,7 +37,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/imagenes/logo_app.png"
+  image_path: "assets/imagenes/opciones/logo_app.png"
   min_sdk_android: 21
 
 flutter:
